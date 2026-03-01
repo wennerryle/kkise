@@ -6,10 +6,9 @@ In web application development, state is often structured as a tree to mimic the
 component hierarchy. For a timeline-based tool like KKISE, this leads to deeply
 nested objects where "Timelines" contain arrays of "Intervals."
 
-Example of the current nested structure:
+Example of the nested structure:
 
 ```json
-{
 {
     "duration": 144142,
     "timelines": [
@@ -18,7 +17,6 @@ Example of the current nested structure:
             "intervals": [{ "id": "int1", "offsetX": 1500, "duration": 132 }, ...]
         }
     ]
-}
 }
 ```
 
