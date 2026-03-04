@@ -27,7 +27,8 @@
 		secondaryLine: slate400,
 		mainLine: slate500,
 		text: slate500,
-		font: '10px Inter, sans-serif',
+		fontSize: 10,
+		font: 'Inter, sans-serif',
 		tickMain: 25,
 		tickSub: 35
 	};
@@ -39,7 +40,6 @@
 		const width = canvas.width;
 		const height = canvas.height;
 
-		// 1. Очистка холста
 		ctx.fillStyle = theme.bg;
 		ctx.fillRect(0, 0, width, height);
 
@@ -47,9 +47,9 @@
 		ctx.lineWidth = 1 * dpr;
 		ctx.fillStyle = theme.text;
 
-		const fontSize = 10 * dpr;
+		const fontSize = theme.fontSize * dpr;
 
-		ctx.font = `${fontSize}px Inter, sans-serif`;
+		ctx.font = `${fontSize}px ${theme.font}`;
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'top';
 
@@ -97,8 +97,6 @@
 				ctx.stroke();
 			}
 		}
-
-		console.log("redraw");
 	}
 
 	// Обработка изменения размера окна
@@ -144,7 +142,7 @@
 <div
 	bind:this={container}
 	class={[
-		'relative h-full min-h-32 w-full overflow-hidden border-b border-slate-200 select-none cursor-e-resize',
+		'relative h-full min-h-12 w-full overflow-hidden border-b border-slate-200 select-none cursor-e-resize',
 	]}
 >
 	<canvas

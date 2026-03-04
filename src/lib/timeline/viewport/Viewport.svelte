@@ -27,7 +27,7 @@
         const delta = -event.deltaY * zoomSpeed;
         const newZoom = Math.max(10, oldZoom + delta);
         
-        viewport.zoomLevel =newZoom;
+        viewport.zoomLevel = newZoom;
 
         scrollLeft = Math.max(0, (timeAtMouse * newZoom) - mouseX);
     }
