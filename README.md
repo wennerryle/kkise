@@ -1,3 +1,7 @@
+<img src="./simple-logo.svg" style="height: 100px;">
+
+___
+
 # KKISE
 
 <center>
