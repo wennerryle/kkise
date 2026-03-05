@@ -12,7 +12,6 @@ export function formatTime(totalSeconds: number): string {
     const mStr = minutes.toString().padStart(2, "0");
     const sStr = seconds.toString().padStart(2, "0");
 
-    // Если время больше часа, добавляем часы в начало
     if (hours > 0) {
         const hStr = hours.toString();
         return `${hStr}:${mStr}:${sStr}`;

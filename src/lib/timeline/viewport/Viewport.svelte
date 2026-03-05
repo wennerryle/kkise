@@ -1,44 +1,51 @@
 <script lang="ts">
-    import Ruler from './Ruler.svelte';
-    import { MouseButtons } from '../core/constants';
+	import Ruler from './Ruler.svelte';
+	import { MouseButtons } from '../core/constants';
 	import { Viewport } from '../core/Viewport.svelte';
+	import TrackList from '../tracks/TrackList.svelte';
 
-    let scrollLeft = $state(0);
-    let container: HTMLDivElement;
-	
+	let container: HTMLDivElement;
+
 	const viewport = new Viewport();
 
-    function handleMouseMove({ movementX, buttons }: MouseEvent) {
-        if (!(buttons & MouseButtons.Primary)) return;
-        scrollLeft = Math.max(0, scrollLeft - movementX);
-    }
+	let isLeftMouseButtonPressed = false;
 
-    function handleWheel(event: WheelEvent) {
-        event.preventDefault();
+	function handleMouseMove({ movementX, buttons }: MouseEvent) {
+		if (!(buttons & MouseButtons.Primary)) isLeftMouseButtonPressed = false;
+		if (!isLeftMouseButtonPressed) return;
+		viewport.scrollLeft = Math.max(0, viewport.scrollLeft - movementX);
+	}
 
-        const rect = container.getBoundingClientRect();
-        const mouseX = event.clientX - rect.left;
+	function handleWheel(event: WheelEvent) {
+		event.preventDefault();
 
+		const rect = container.getBoundingClientRect();
+		const TRACK_HEADER_WIDTH = 144;
+		const mouseX = event.clientX - rect.left - TRACK_HEADER_WIDTH;
 		const oldZoom = viewport.zoomLevel;
+		const timeAtMouse = (viewport.scrollLeft + mouseX) / oldZoom;
+		const zoomSpeed = 0.05;
+		const delta = -event.deltaY * zoomSpeed;
+		const newZoom = Math.max(10, oldZoom + delta);
 
-        const timeAtMouse = (scrollLeft + mouseX) / oldZoom;
+		viewport.zoomLevel = newZoom;
 
-        const zoomSpeed = 0.05;
-        const delta = -event.deltaY * zoomSpeed;
-        const newZoom = Math.max(10, oldZoom + delta);
-        
-        viewport.zoomLevel = newZoom;
-
-        scrollLeft = Math.max(0, (timeAtMouse * newZoom) - mouseX);
-    }
+		viewport.scrollLeft = Math.max(0, timeAtMouse * newZoom - mouseX);
+	}
 </script>
 
 <div
-    bind:this={container}
-    class="flex h-full w-full flex-col overflow-hidden select-none bg-slate-50"
-    onwheel={handleWheel}
-    onmousemove={handleMouseMove}
-    role="presentation"
+	class="relative mx-auto flex h-full w-1/2 flex-col overflow-hidden bg-slate-50 select-none"
+	bind:this={container}
 >
-    <Ruler {viewport} bind:scrollLeft />
+	<div
+		onwheel={handleWheel}
+		onmousemove={handleMouseMove}
+		onmousedown={() => (isLeftMouseButtonPressed = true)}
+		onmouseup={() => (isLeftMouseButtonPressed = false)}
+		role="presentation"
+	>
+		<Ruler {viewport} />
+	</div>
+	<TrackList />
 </div>

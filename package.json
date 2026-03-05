@@ -32,6 +32,9 @@
 		"vitest": "^4.0.18"
 	},
 	"dependencies": {
-		"@dnd-kit/svelte": "^0.3.2"
+		"@dnd-kit/svelte": "^0.3.2",
+		"bits-ui": "^2.16.3",
+		"es-toolkit": "^1.45.1",
+		"lucide-svelte": "^0.577.0"
 	}
 }
