@@ -30,7 +30,7 @@
 <div
 	{@attach sortable.attach}
 	class={[
-		'z-10 flex w-36 justify-between gap-2 border-r border-b border-slate-200 bg-gray-50/80 p-2.5 transition-shadow',
+		'z-10 flex w-36 justify-between gap-2 border-r border-b border-slate-200 bg-gray-50/80 px-2.5 py-1 transition-shadow',
 		sortable.isDragging && 'shadow-2xl'
 	]}
 >
