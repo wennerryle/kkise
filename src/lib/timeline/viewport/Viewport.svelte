@@ -35,7 +35,7 @@
 </script>
 
 <div
-	class="relative mx-auto flex h-full w-1/2 flex-col overflow-hidden bg-slate-50 select-none"
+	class="relative mx-auto flex h-full flex-col overflow-hidden bg-slate-50 select-none"
 	bind:this={container}
 >
 	<div

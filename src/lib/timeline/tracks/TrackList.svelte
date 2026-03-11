@@ -10,9 +10,9 @@
 
 <DragDropProvider {onDragEnd}>
 	<div class="z-20 h-8.75 w-0"></div>
-	{#each 'bienvenidamiga!'.toUpperCase().split('') as hehe, i}
+	{#each { length: 8 } as _, i}
 		<Track
-			buttonKey="Key{hehe}"
+			buttonKey="Track {i + 1}"
 			id={Math.random()}
 			index={i}
 			onChangeButtonCode={() => {}}
