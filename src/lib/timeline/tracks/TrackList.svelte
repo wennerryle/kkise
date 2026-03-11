@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { DragDropProvider } from '@dnd-kit/svelte';
 	import type { DnDEvents } from './dnd-kit-types';
-	import type { UniqueIdentifier } from '$lib/core/types';
 	import Track from './Track.svelte';
 
 	const onDragEnd: DnDEvents['onDragEnd'] = (event) => {
@@ -14,7 +13,7 @@
 	{#each 'bienvenidamiga!'.toUpperCase().split('') as hehe, i}
 		<Track
 			buttonKey="Key{hehe}"
-			id={crypto.randomUUID()}
+			id={Math.random()}
 			index={i}
 			onChangeButtonCode={() => {}}
 			onTrackDelete={() => {}}
