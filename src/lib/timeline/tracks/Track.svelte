@@ -11,11 +11,9 @@
 		id: UniqueIdentifier;
 		index: number;
 		buttonKey: string;
-		onChangeButtonCode: (code: string) => void;
-		onTrackDelete: (code: UniqueIdentifier) => void;
 	}
 
-	const { buttonKey, index, id, onChangeButtonCode, onTrackDelete }: Props = $props();
+	const { buttonKey, index, id }: Props = $props();
 
 	const sortable = createSortable({
 		get id() {
@@ -81,5 +79,11 @@
 			</Popover.Portal>
 		</Popover.Root>
 	</div>
-	<div class="w-full" {...timelineRulerController.handlers}>heello</div>
+	<div class="relative w-full cursor-e-resize" {...timelineRulerController.handlers}>
+		{#each { length: 10 } as _, i}
+			<div class="absolute w-20 cursor-grab bg-black" style="left: {i * 100 + 20}px">
+				{i}
+			</div>
+		{/each}
+	</div>
 </div>

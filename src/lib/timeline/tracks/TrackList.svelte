@@ -11,12 +11,6 @@
 <DragDropProvider {onDragEnd}>
 	<div class="z-20 h-8.75 w-0"></div>
 	{#each { length: 8 } as _, i}
-		<Track
-			buttonKey="Track {i + 1}"
-			id={Math.random()}
-			index={i}
-			onChangeButtonCode={() => {}}
-			onTrackDelete={() => {}}
-		/>
+		<Track buttonKey="Track {i + 1}" id={Math.random()} index={i} />
 	{/each}
 </DragDropProvider>
