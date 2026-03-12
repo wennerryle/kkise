@@ -1,17 +1,14 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { formatTime } from '../core/utils';
-	import type { Viewport } from '../core/Viewport.svelte';
+	import { TimelineRulerController } from '../core/TimelineRulerController';
+	import { getViewportContext } from '../viewport-context';
 
-	interface Props {
-		viewport: Viewport;
-	}
-
-	let { viewport }: Props = $props();
+	const viewport = getViewportContext();
 
 	let canvas: HTMLCanvasElement;
 	let ctx: CanvasRenderingContext2D | null;
-	let container: Element;
+	let container: HTMLElement;
 	let dpr = 1;
 
 	const slate50 = '#f8fafc';
@@ -125,13 +122,17 @@
 			requestAnimationFrame(draw);
 		}
 	});
+
+	const timelineController = new TimelineRulerController(viewport);
 </script>
 
 <div
 	bind:this={container}
+	style="--track-header-width: {viewport.trackWidth}px"
 	class={[
-		'absolute right-0 h-full min-h-12 w-[calc(100%-var(--spacing)*36)] cursor-e-resize overflow-hidden border-b border-slate-200 select-none'
+		'absolute right-0 h-full min-h-12 w-[calc(100%-var(--track-header-width))] cursor-e-resize overflow-hidden border-b border-slate-200 select-none'
 	]}
+	{...timelineController.handlers}
 >
-	<canvas bind:this={canvas} class="absolute inset-0 block"></canvas>
+	<canvas bind:this={canvas} class="absolute block"></canvas>
 </div>
