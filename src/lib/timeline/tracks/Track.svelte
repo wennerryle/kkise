@@ -81,5 +81,5 @@
 			</Popover.Portal>
 		</Popover.Root>
 	</div>
-	<div class="w-full bg-amber-50/50" {...timelineRulerController.handlers}>rest of timeline</div>
+	<div class="h-full w-full" {...timelineRulerController.handlers}>rest of timeline</div>
 </div>
