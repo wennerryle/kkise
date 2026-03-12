@@ -12,13 +12,17 @@ export class TimelineRulerController {
     }
 
     handlers: HTMLAttributes<HTMLElement> = {
-        onmousedown: () => {
+        onpointerdown: (event) => {
             this.isMouseDragging = true;
+            (event.target as HTMLDivElement).setPointerCapture(event.pointerId);
         },
-        onmouseup: () => {
+        onpointerup: (event) => {
             this.isMouseDragging = false;
+            (event.target as HTMLDivElement).releasePointerCapture(
+                event.pointerId,
+            );
         },
-        onmousemove: ({ movementX, buttons }) => {
+        onpointermove: ({ movementX, buttons }) => {
             if (!(buttons & MouseButtons.Primary)) {
                 this.isMouseDragging = false;
             }

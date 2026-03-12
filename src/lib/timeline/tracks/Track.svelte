@@ -81,5 +81,5 @@
 			</Popover.Portal>
 		</Popover.Root>
 	</div>
-	<div class="h-full w-full" {...timelineRulerController.handlers}>rest of timeline</div>
+	<div class="w-full" {...timelineRulerController.handlers}>heello</div>
 </div>
