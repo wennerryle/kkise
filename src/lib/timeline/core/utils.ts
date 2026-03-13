@@ -19,11 +19,3 @@ export function formatTime(totalSeconds: number): string {
 
     return `${mStr}:${sStr}`;
 }
-
-/**
- * Вспомогательная функция для перевода позиции X в секунды
- * (пригодится для клика по линейке)
- */
-export function pxToTime(x: number, zoomLevel: number, scrollLeft = 0) {
-    return (x + scrollLeft) / zoomLevel;
-}

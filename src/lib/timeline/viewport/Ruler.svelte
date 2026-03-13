@@ -23,7 +23,7 @@
 		fontSize: 10,
 		font: 'Inter, sans-serif',
 		tickMain: 25,
-		tickSub: 35
+		tickSub: 28
 	};
 
 	let isResized = false;
@@ -46,21 +46,23 @@
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'top';
 
-		const zl = viewport.zoomLevel;
+		const zoomLevel = viewport.zoomLevelSec;
 
 		const visibleWidthCss = width / dpr;
-		const startSec = Math.floor(viewport.scrollLeft / zl);
-		const endSec = Math.ceil((viewport.scrollLeft + visibleWidthCss) / zl);
+		const startSeconds = Math.floor(viewport.scrollLeft / zoomLevel);
+		const endSeconds = Math.ceil((viewport.scrollLeft + visibleWidthCss) / zoomLevel);
 
 		let step = 1;
-		if (zl < 15) step = 30;
-		else if (zl < 30) step = 10;
-		else if (zl < 60) step = 5;
+		if (zoomLevel < 15) step = 30;
+		else if (zoomLevel < 30) step = 10;
+		else if (zoomLevel < 60) step = 5;
 
-		for (let i = startSec; i <= endSec; i++) {
-			if (i < 0 || i > viewport.totalSeconds) continue;
+		const totalDurationInSeconds = viewport.totalDuration / 1000;
 
-			const xPx = (i * zl - viewport.scrollLeft) * dpr;
+		for (let i = startSeconds; i <= endSeconds; i++) {
+			if (i < 0 || i > totalDurationInSeconds) continue;
+
+			const xPx = (i * zoomLevel - viewport.scrollLeft) * dpr;
 
 			if (i % step === 0) {
 				ctx.strokeStyle = theme.mainLine;
@@ -77,7 +79,7 @@
 				} else {
 					ctx.fillText(formatTime(i), xPx, (theme.tickMain - fontSize - gap) * dpr);
 				}
-			} else if (zl > 15) {
+			} else if (zoomLevel > 15) {
 				ctx.strokeStyle = theme.secondaryLine;
 				ctx.beginPath();
 				ctx.moveTo(xPx, height);
@@ -114,9 +116,9 @@
 	});
 
 	$effect(() => {
-		viewport.zoomLevel;
+		viewport.zoomLevelMs;
 		viewport.scrollLeft;
-		viewport.totalSeconds;
+		viewport.totalDuration;
 
 		if (ctx) {
 			requestAnimationFrame(draw);
@@ -128,11 +130,10 @@
 
 <div
 	bind:this={container}
-	style="--track-header-width: {viewport.trackWidth}px"
+	style="--track-header-width: {viewport.trackHeaderWidth}px"
 	class={[
 		'absolute right-0 h-full min-h-12 w-[calc(100%-var(--track-header-width))] cursor-e-resize overflow-hidden border-b border-slate-200 select-none'
 	]}
-	{...timelineController.handlers}
 >
-	<canvas bind:this={canvas} class="absolute block"></canvas>
+	<canvas bind:this={canvas} {...timelineController.handlers} class="absolute block"></canvas>
 </div>

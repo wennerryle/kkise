@@ -1,23 +1,23 @@
 <script lang="ts">
-	import type { UniqueIdentifier } from '$lib/core/types';
 	import { createSortable } from '@dnd-kit/svelte/sortable';
 	import Grip from 'lucide-svelte/icons/grip';
 	import EllipsisVertical from 'lucide-svelte/icons/ellipsis-vertical';
 	import { Popover } from 'bits-ui';
 	import { getViewportContext } from '../viewport-context';
 	import { TimelineRulerController } from '../core/TimelineRulerController';
+	import Interval from './Interval.svelte';
+	import { type Track, IntervalRepository } from '../repos/Repositories.svelte';
 
 	interface Props {
-		id: UniqueIdentifier;
+		track: Track;
 		index: number;
-		buttonKey: string;
 	}
 
-	const { buttonKey, index, id }: Props = $props();
+	const { track, index }: Props = $props();
 
 	const sortable = createSortable({
 		get id() {
-			return id;
+			return track.id;
 		},
 		get index() {
 			return index;
@@ -28,11 +28,12 @@
 
 	const viewport = getViewportContext();
 	const timelineRulerController = new TimelineRulerController(viewport);
+	const intervalRepo = new IntervalRepository();
 </script>
 
 <div {@attach sortable.attach} class="z-10 flex w-full flex-row">
 	<div
-		style="max-width: {viewport.trackWidth}px; min-width: {viewport.trackWidth}px;"
+		style="max-width: {viewport.trackHeaderWidth}px; min-width: {viewport.trackHeaderWidth}px;"
 		class={[
 			'flex justify-between gap-2 border-r border-b border-slate-200 bg-gray-50/80 px-2.5 py-1 transition-shadow',
 			sortable.isDragging && 'shadow-2xl'
@@ -42,7 +43,7 @@
 			<span class="sr-only"> Dragging Area </span>
 			<Grip class="size-3.5" />
 		</button>
-		{buttonKey}
+		X
 		<Popover.Root>
 			<Popover.Trigger
 				class="cursor-pointer rounded-sm outline-offset-0 outline-blue-500 aria-expanded:outline-2 aria-expanded:outline-offset-3"
@@ -80,10 +81,9 @@
 		</Popover.Root>
 	</div>
 	<div class="relative w-full cursor-e-resize" {...timelineRulerController.handlers}>
-		{#each { length: 10 } as _, i}
-			<div class="absolute w-20 cursor-grab bg-black" style="left: {i * 100 + 20}px">
-				{i}
-			</div>
+		{#each track.intervals as intervalId (intervalId)}
+			{@const interval = intervalRepo.intervals.get(intervalId)!}
+			<Interval {interval} />
 		{/each}
 	</div>
 </div>
