@@ -73,11 +73,12 @@
 				ctx.stroke();
 
 				const gap = 4;
+				const yPx = (theme.tickMain - theme.fontSize - gap) * dpr;
 
 				if (i === 0) {
-					ctx.fillText(formatTime(i), xPx + 12, (theme.tickMain - fontSize - gap) * dpr);
+					ctx.fillText(formatTime(i), xPx + 12 * dpr, yPx);
 				} else {
-					ctx.fillText(formatTime(i), xPx, (theme.tickMain - fontSize - gap) * dpr);
+					ctx.fillText(formatTime(i), xPx, yPx);
 				}
 			} else if (zoomLevel > 15) {
 				ctx.strokeStyle = theme.secondaryLine;
