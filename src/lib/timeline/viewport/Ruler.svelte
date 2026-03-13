@@ -94,6 +94,8 @@
 		dpr = window.devicePixelRatio || 1;
 		const rect = container.getBoundingClientRect();
 
+		viewport.width = rect.width;
+
 		canvas.width = rect.width * dpr;
 		canvas.height = rect.height * dpr;
 

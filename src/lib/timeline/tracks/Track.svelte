@@ -33,9 +33,9 @@
 
 <div {@attach sortable.attach} class="z-10 flex w-full flex-row">
 	<div
-		style="max-width: {viewport.trackHeaderWidth}px; min-width: {viewport.trackHeaderWidth}px;"
+		style="width: {viewport.trackHeaderWidth}px;"
 		class={[
-			'flex justify-between gap-2 border-r border-b border-slate-200 bg-gray-50/80 px-2.5 py-1 transition-shadow',
+			'z-20 flex justify-between gap-2 border-r border-b border-slate-200 bg-gray-50/80 px-2.5 py-1 transition-shadow',
 			sortable.isDragging && 'shadow-2xl'
 		]}
 	>
@@ -80,7 +80,7 @@
 			</Popover.Portal>
 		</Popover.Root>
 	</div>
-	<div class="relative w-full cursor-e-resize" {...timelineRulerController.handlers}>
+	<div class="relative flex-1 cursor-e-resize" {...timelineRulerController.handlers}>
 		{#each track.intervals as intervalId (intervalId)}
 			{@const interval = intervalRepo.intervals.get(intervalId)!}
 			<Interval {interval} />

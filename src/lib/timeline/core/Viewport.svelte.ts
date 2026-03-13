@@ -1,5 +1,6 @@
 export class Viewport {
     trackHeaderWidth = $state(300);
+    width = $state(0);
 
     /** Total duration in ms */
     totalDuration = $state(600 * 1000);
