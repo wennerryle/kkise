@@ -36,7 +36,7 @@
 	<div
 		style="width: {viewport.trackHeaderWidth}px;"
 		class={[
-			'z-20 flex justify-between gap-2 border-r border-b border-slate-200 bg-gray-50 px-2.5 py-1 transition-shadow',
+			'z-20 flex justify-between gap-2 border-y border-r border-slate-200 bg-gray-50 px-2.5 py-1 transition-shadow',
 			sortable.isDragging && 'shadow-2xl'
 		]}
 	>

@@ -14,8 +14,10 @@
 <DragDropProvider {onDragEnd}>
 	<div class="z-20 h-10 w-0"></div>
 
-	{#each trackRepo.tracksIds as trackId, i (trackId)}
-		{@const track = trackRepo.tracks.get(trackId)!}
-		<Track {track} index={i} />
-	{/each}
+	<div class="flex flex-col gap-2">
+		{#each trackRepo.tracksIds as trackId, i (trackId)}
+			{@const track = trackRepo.tracks.get(trackId)!}
+			<Track {track} index={i} />
+		{/each}
+	</div>
 </DragDropProvider>

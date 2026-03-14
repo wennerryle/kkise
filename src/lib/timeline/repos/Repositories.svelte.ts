@@ -73,8 +73,11 @@ export class IntervalRepository {
         }
 
         for (let i = 0; i < 3; i++) {
+            const gapS = 1000;
+            const size = 8 * 1000;
+
             this.addInterval(
-                new Interval("interval" + (i + 1), 16000 * i, 15000),
+                new Interval("interval" + (i + 1), (gapS + size) * i, size),
             );
         }
     }

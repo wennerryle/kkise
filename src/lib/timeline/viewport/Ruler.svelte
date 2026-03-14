@@ -133,9 +133,9 @@
 
 <div
 	bind:this={container}
-	style="--track-header-width: {viewport.trackHeaderWidth}px"
+	style="--track-header-width: {viewport.trackHeaderWidth - 1}px"
 	class={[
-		'absolute right-0 h-full min-h-12 w-[calc(100%-var(--track-header-width))] cursor-e-resize overflow-hidden border-b border-slate-200 select-none'
+		'absolute right-0 h-full min-h-12 w-[calc(100%-var(--track-header-width))] cursor-e-resize overflow-hidden border-b border-l border-slate-200 select-none'
 	]}
 >
 	<canvas bind:this={canvas} {...timelineController.handlers} class="absolute block"></canvas>
