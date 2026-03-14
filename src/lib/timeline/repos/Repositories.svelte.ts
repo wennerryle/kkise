@@ -18,26 +18,25 @@ export class TrackRepository {
     tracksIds = $state<string[]>([]);
 
     constructor() {
+        if (browser) {
+            // @ts-expect-error
+            window.tracksRepo = this;
+        }
+
         this.addTrack(
             new Track("track1", "Track 1", [
                 "interval1",
-                "interval2",
-                "interval3",
             ]),
         );
 
         this.addTrack(
             new Track("track2", "Track 2", [
-                "interval1",
                 "interval2",
-                "interval3",
             ]),
         );
 
         this.addTrack(
             new Track("track3", "Track 3", [
-                "interval1",
-                "interval2",
                 "interval3",
             ]),
         );
