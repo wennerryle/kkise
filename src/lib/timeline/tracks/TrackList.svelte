@@ -2,13 +2,13 @@
 	import { DragDropProvider } from '@dnd-kit/svelte';
 	import type { DnDEvents } from './dnd-kit-types';
 	import Track from './Track.svelte';
-	import { TrackRepository } from '../repos/Repositories.svelte';
+	import { getTrackRepository } from '../repositories-context';
 
 	const onDragEnd: DnDEvents['onDragEnd'] = (event) => {
 		if (event.canceled) return;
 	};
 
-	const trackRepo = new TrackRepository();
+	const trackRepo = getTrackRepository();
 </script>
 
 <DragDropProvider {onDragEnd}>

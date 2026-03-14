@@ -6,7 +6,8 @@
 	import { getViewportContext } from '../viewport-context';
 	import { TimelineRulerController } from '../core/TimelineRulerController';
 	import Interval from './Interval.svelte';
-	import { type Track, IntervalRepository } from '../repos/Repositories.svelte';
+	import { type Track } from '../repos/Repositories.svelte';
+	import { getIntervalRepository } from '../repositories-context';
 
 	interface Props {
 		track: Track;
@@ -28,7 +29,7 @@
 
 	const viewport = getViewportContext();
 	const timelineRulerController = new TimelineRulerController(viewport);
-	const intervalRepo = new IntervalRepository();
+	const intervalRepo = getIntervalRepository();
 </script>
 
 <div {@attach sortable.attach} class="z-10 flex w-full flex-row">

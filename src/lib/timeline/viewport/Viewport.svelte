@@ -4,9 +4,12 @@
 	import { Viewport } from '../core/Viewport.svelte';
 	import TrackList from '../tracks/TrackList.svelte';
 	import { setViewportContext } from '../viewport-context';
+	import { setIntervalRepository, setTrackRepository } from '../repositories-context';
+	import { IntervalRepository, TrackRepository } from '../repos/Repositories.svelte';
 
-	const viewport = new Viewport();
-	setViewportContext(viewport);
+	setViewportContext(new Viewport());
+	setIntervalRepository(new IntervalRepository());
+	setTrackRepository(new TrackRepository());
 </script>
 
 <div class="relative mx-auto flex h-full flex-col overflow-hidden bg-slate-50 select-none">
