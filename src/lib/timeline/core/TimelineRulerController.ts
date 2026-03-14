@@ -34,9 +34,11 @@ export class TimelineRulerController {
 
             if (!this.isMouseDragging) return;
 
+            const dpr = window.devicePixelRatio || 1;
+
             this.viewport.scrollLeft = Math.max(
                 0,
-                this.viewport.scrollLeft - movementX,
+                this.viewport.scrollLeft - movementX / dpr,
             );
         },
         onwheel: (event) => {
