@@ -14,7 +14,7 @@
 		index: number;
 	}
 
-	const { track, index }: Props = $props();
+	let { track, index }: Props = $props();
 
 	const sortable = createSortable({
 		get id() {
@@ -22,17 +22,16 @@
 		},
 		get index() {
 			return index;
-		},
-		accept: 'item',
-		type: 'item'
+		}
 	});
 
 	const viewport = getViewportContext();
-	const timelineRulerController = new TimelineRulerController(viewport);
 	const intervalRepo = getIntervalRepository();
+
+	const timelineRulerController = new TimelineRulerController(viewport);
 </script>
 
-<div {@attach sortable.attach} class="z-10 flex w-full flex-row">
+<div {@attach sortable.attach} class="z-10 flex w-full flex-row" data-uuid={track.id}>
 	<div
 		style="width: {viewport.trackHeaderWidth}px;"
 		class={[
@@ -44,7 +43,7 @@
 			<span class="sr-only"> Dragging Area </span>
 			<Grip class="size-3.5" />
 		</button>
-		X
+		{track.id}
 		<Popover.Root>
 			<Popover.Trigger
 				class="cursor-pointer rounded-sm outline-offset-0 outline-blue-500 aria-expanded:outline-2 aria-expanded:outline-offset-3"
@@ -84,7 +83,7 @@
 	<div class="relative flex-1 cursor-e-resize" {...timelineRulerController.handlers}>
 		{#each track.intervals as intervalId (intervalId)}
 			{@const interval = intervalRepo.intervals.get(intervalId)!}
-			<Interval {interval} />
+			<Interval trackId={track.id} {interval} />
 		{/each}
 	</div>
 </div>

@@ -15,7 +15,8 @@ export class Track {
 
 export class TrackRepository {
     tracks = new SvelteMap<string, Track>();
-    tracksIds = $state<string[]>([]);
+
+    tracksIds: string[] = $state([]);
 
     constructor() {
         if (browser) {
@@ -24,19 +25,19 @@ export class TrackRepository {
         }
 
         this.addTrack(
-            new Track("track1", "Track 1", [
+            new Track("track1id", "Track 1", [
                 "interval1",
             ]),
         );
 
         this.addTrack(
-            new Track("track2", "Track 2", [
+            new Track("track2id", "Track 2", [
                 "interval2",
             ]),
         );
 
         this.addTrack(
-            new Track("track3", "Track 3", [
+            new Track("track3id", "Track 3", [
                 "interval3",
             ]),
         );

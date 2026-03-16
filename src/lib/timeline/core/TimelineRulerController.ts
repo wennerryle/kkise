@@ -45,7 +45,6 @@ export class TimelineRulerController {
             event.preventDefault();
 
             const container = event.currentTarget;
-            if (!container) return;
             const rect = container.getBoundingClientRect();
             const mouseX = event.clientX - rect.left;
             const oldZoom = this.viewport.zoomLevelSec;
