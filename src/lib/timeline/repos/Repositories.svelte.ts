@@ -20,7 +20,7 @@ export class TrackRepository {
 
     constructor() {
         if (browser) {
-            // @ts-expect-error
+            // @ts-expect-error for debug reason
             window.tracksRepo = this;
         }
 
@@ -49,7 +49,7 @@ export class TrackRepository {
     }
 }
 export class Interval {
-    /** Unique ID for inteval */
+    /** Unique ID for interval */
     id: string;
     /** Offset in milliseconds (start of interval in track) */
     offset: number;
@@ -68,7 +68,7 @@ export class IntervalRepository {
 
     constructor() {
         if (browser) {
-            // @ts-expect-error
+            // @ts-expect-error for debug reason
             window.intervalRepo = this;
         }
 
