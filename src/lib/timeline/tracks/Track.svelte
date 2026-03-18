@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createSortable } from '@dnd-kit/svelte/sortable';
+	import { createSortable, createDroppable } from '$lib/core/dndkit';
 	import Grip from 'lucide-svelte/icons/grip';
 	import EllipsisVertical from 'lucide-svelte/icons/ellipsis-vertical';
 	import { Popover } from 'bits-ui';
@@ -22,6 +22,21 @@
 		},
 		get index() {
 			return index;
+		},
+		get data() {
+			return { tag: 'track' as const, trackId: track.id };
+		}
+	});
+
+	const trackViewportDroppable = createDroppable({
+		get id() {
+			return track.id;
+		},
+		get data() {
+			return {
+				tag: 'track' as const,
+				trackId: track.id
+			};
 		}
 	});
 
@@ -80,7 +95,11 @@
 			</Popover.Portal>
 		</Popover.Root>
 	</div>
-	<div class="relative flex-1 cursor-e-resize" {...timelineRulerController.handlers}>
+	<div
+		class="relative flex-1 cursor-e-resize"
+		{@attach trackViewportDroppable.attach}
+		{...timelineRulerController.handlers}
+	>
 		{#each track.intervals as intervalId (intervalId)}
 			{@const interval = intervalRepo.intervals.get(intervalId)!}
 			<Interval trackId={track.id} {interval} />

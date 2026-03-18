@@ -2,7 +2,7 @@
 	import type { Interval } from '../repos/Repositories.svelte';
 	import Grip from 'lucide-svelte/icons/grip';
 	import { getViewportContext } from '../viewport-context';
-	import { createDraggable } from '@dnd-kit/svelte';
+	import { createDraggable } from '$lib/core/dndkit';
 
 	interface Props {
 		trackId: string;
@@ -23,11 +23,10 @@
 		},
 		get data() {
 			return {
-				trackId,
-				type: 'interval'
+				tag: 'interval' as const,
+				trackId
 			};
-		},
-		type: 'interval'
+		}
 	});
 </script>
 
