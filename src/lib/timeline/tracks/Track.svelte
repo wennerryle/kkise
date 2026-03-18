@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createSortable, createDroppable } from '$lib/core/dndkit';
+	import { createDroppable, createSortable } from '$lib/core/dndkit';
 	import Grip from 'lucide-svelte/icons/grip';
 	import EllipsisVertical from 'lucide-svelte/icons/ellipsis-vertical';
 	import { Popover } from 'bits-ui';
@@ -8,24 +8,29 @@
 	import Interval from './Interval.svelte';
 	import { type Track } from '../repos/Repositories.svelte';
 	import { getIntervalRepository } from '../repositories-context';
+	import { onMount } from 'svelte';
 
 	interface Props {
 		track: Track;
 		index: number;
 	}
 
-	let { track, index }: Props = $props();
+	const { track, index }: Props = $props();
 
-	const sortable = createSortable({
-		get id() {
-			return track.id;
-		},
-		get index() {
-			return index;
-		},
-		get data() {
-			return { tag: 'track' as const, trackId: track.id };
-		}
+	let sortable = $state<ReturnType<typeof createSortable>>();
+
+	onMount(() => {
+		sortable = createSortable({
+			get id() {
+				return track.id;
+			},
+			get index() {
+				return index;
+			},
+			get data() {
+				return { tag: 'track' as const, trackId: track.id };
+			}
+		});
 	});
 
 	const trackViewportDroppable = createDroppable({
@@ -46,15 +51,15 @@
 	const timelineRulerController = new TimelineRulerController(viewport);
 </script>
 
-<div {@attach sortable.attach} class="z-10 flex w-full flex-row" data-uuid={track.id}>
+<div {@attach sortable?.attach} class="z-10 flex w-full flex-row">
 	<div
 		style="width: {viewport.trackHeaderWidth}px;"
 		class={[
 			'z-20 flex justify-between gap-2 border-y border-r border-slate-200 bg-gray-50 px-2.5 py-1 transition-shadow',
-			sortable.isDragging && 'shadow-2xl'
+			sortable?.isDragging && 'shadow-2xl'
 		]}
 	>
-		<button {@attach sortable.attachHandle} class="cursor-grab">
+		<button {@attach sortable?.attachHandle} class="cursor-grab">
 			<span class="sr-only"> Dragging Area </span>
 			<Grip class="size-3.5" />
 		</button>
