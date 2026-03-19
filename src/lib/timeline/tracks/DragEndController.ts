@@ -9,15 +9,16 @@ import type {
     IntervalRepository,
     TrackRepository,
 } from "../repos/Repositories.svelte";
-import { CollisionManager } from "./CollisionManager";
+
+import { detectIntervalToTracksMovingCollision } from "./CollisionManager";
 
 export class DragEndController {
     trackRepo: TrackRepository;
-    collisionManager: CollisionManager;
+    intervalRepo: IntervalRepository;
 
     constructor(trackRepo: TrackRepository, intervalRepo: IntervalRepository) {
         this.trackRepo = trackRepo;
-        this.collisionManager = new CollisionManager(intervalRepo);
+        this.intervalRepo = intervalRepo;
     }
 
     onDragEnd: DnDEvents["onDragEnd"] = (event, manager) => {
@@ -61,11 +62,10 @@ export class DragEndController {
         const targetTrack = this.trackRepo.tracks.get(targetDataTrack.trackId)!;
 
         if (
-            targetTrack.intervals.some((iteratingIntervalId) =>
-                this.collisionManager.detectIntervalsCollision(
-                    intervalId,
-                    iteratingIntervalId,
-                )
+            detectIntervalToTracksMovingCollision(
+                this.intervalRepo,
+                targetTrack,
+                intervalId,
             )
         ) {
             return;

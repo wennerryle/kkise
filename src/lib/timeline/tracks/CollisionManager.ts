@@ -1,23 +1,32 @@
-import type { IntervalRepository } from "../repos/Repositories.svelte";
+import type {
+    Interval,
+    IntervalRepository,
+    Track,
+} from "../repos/Repositories.svelte";
 
-export class CollisionManager {
-    intervalRepo: IntervalRepository;
-    constructor(intervalRepo: IntervalRepository) {
-        this.intervalRepo = intervalRepo;
-    }
+export function detectIntervalsCollision(
+    source: Interval,
+    target: Interval,
+) {
+    const sourceEnd = source.duration + source.offset;
+    const targetEnd = target.duration + target.offset;
 
-    detectIntervalsCollision(
-        sourceIntervalId: string,
-        targetIntervalId: string,
-    ) {
-        if (sourceIntervalId === targetIntervalId) return true;
+    return sourceEnd > target.offset && source.offset < targetEnd;
+}
 
-        const source = this.intervalRepo.intervals.get(sourceIntervalId)!;
-        const target = this.intervalRepo.intervals.get(targetIntervalId)!;
+export function detectIntervalToTracksMovingCollision(
+    intervalRepo: IntervalRepository,
+    targetTrack: Track,
+    intervalId: string,
+) {
+    const source = intervalRepo.intervals.get(intervalId)!;
 
-        const sourceEnd = source.duration + source.offset;
-        const targetEnd = target.duration + target.offset;
+    return targetTrack.intervals.some((targetIntervalId) => {
+        const target = intervalRepo.intervals.get(targetIntervalId)!;
 
-        return sourceEnd > target.offset && source.offset < targetEnd;
-    }
+        return detectIntervalsCollision(
+            source,
+            target,
+        );
+    });
 }
