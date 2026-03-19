@@ -43,8 +43,12 @@ export class IntervalResizeController {
 
         const offset = this.options.interval.offset;
 
-        this.options.interval.offset = Math.max(0, offset + taken);
-        this.options.interval.duration += taken * -1;
+        const duration = this.options.interval.duration;
+        this.options.interval.duration = Math.max(200, duration + taken * -1);
+
+        if (duration !== 200) {
+            this.options.interval.offset = Math.max(0, offset + taken);
+        }
     };
 
     rightControllerAttachment: Attachment<HTMLElement> = (element) => {
@@ -74,6 +78,8 @@ export class IntervalResizeController {
         const dpr = window.devicePixelRatio || 1;
         const taken = movementX / dpr / this.options.viewport.zoomLevelMs;
 
-        this.options.interval.duration += taken;
+        const duration = this.options.interval.duration;
+
+        this.options.interval.duration = Math.max(200, duration + taken);
     };
 }
