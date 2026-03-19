@@ -5,6 +5,7 @@
 	import { createDraggable } from '$lib/core/dndkit';
 	import { IntervalXMoveController } from './IntervalXMoveController';
 	import { getIntervalRepository, getTrackRepository } from '../repositories-context';
+	import { IntervalResizeController } from './IntervalResizeController';
 
 	interface Props {
 		trackId: string;
@@ -45,6 +46,13 @@
 		},
 		viewport
 	});
+
+	const intervalResizeController = new IntervalResizeController({
+		get interval() {
+			return interval;
+		},
+		viewport
+	});
 </script>
 
 {#if (left + width > 0 && left < viewport.width) || intervalMoveController.dragging}
@@ -55,14 +63,21 @@
 		]}
 		style="left: {left}px; width: {width}px;"
 		{@attach draggable.attach}
-		{@attach intervalMoveController.attach}
 		role="presentation"
 	>
 		<div
-			class="relative flex h-full w-max items-center justify-center gap-2 px-2"
-			style="left: {innerPlacementOffset}px;"
+			class="relative flex h-full w-full items-center gap-2 px-2"
+			style="left: {innerPlacementOffset}px; width: {width - innerPlacementOffset}px;"
 			{@attach intervalMoveController.attach}
 		>
+			<div
+				class="absolute left-0 h-full w-2 cursor-e-resize bg-transparent transition-colors hover:bg-green-500"
+				{@attach intervalResizeController.leftControllerAttachment}
+			></div>
+			<div
+				class="absolute right-0 h-full w-2 cursor-e-resize bg-transparent transition-colors hover:bg-green-500"
+				{@attach intervalResizeController.rightControllerAttachment}
+			></div>
 			<button {@attach draggable.attachHandle} class="cursor-grab">
 				<span class="sr-only"> Dragging Area </span>
 				<Grip class="size-3.5" />
