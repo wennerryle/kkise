@@ -61,11 +61,13 @@ export class DragEndController {
         const sourceTrack = this.trackRepo.tracks.get(sourceDataTrack.trackId)!;
         const targetTrack = this.trackRepo.tracks.get(targetDataTrack.trackId)!;
 
+        const checkedInterval = this.intervalRepo.intervals.get(intervalId)!;
+
         if (
             detectIntervalToTracksMovingCollision(
                 this.intervalRepo,
                 targetTrack,
-                intervalId,
+                checkedInterval,
             )
         ) {
             return;

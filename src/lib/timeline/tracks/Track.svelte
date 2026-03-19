@@ -101,7 +101,7 @@
 		</Popover.Root>
 	</div>
 	<div
-		class="relative flex-1 cursor-e-resize"
+		class="relative flex-1 cursor-e-resize border-y border-gray-200"
 		{@attach trackViewportDroppable.attach}
 		{...timelineRulerController.handlers}
 	>

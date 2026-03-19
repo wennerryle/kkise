@@ -4,6 +4,7 @@
 	import { getViewportContext } from '../viewport-context';
 	import { createDraggable } from '$lib/core/dndkit';
 	import { IntervalXMoveController } from './IntervalXMoveController';
+	import { getIntervalRepository, getTrackRepository } from '../repositories-context';
 
 	interface Props {
 		trackId: string;
@@ -30,18 +31,23 @@
 		}
 	});
 
+	const intervalRepo = getIntervalRepository();
+	const trackRepo = getTrackRepository();
+	const track = $derived(trackRepo.tracks.get(trackId)!);
+
 	const intervalMoveController = new IntervalXMoveController({
+		intervalRepo,
 		get interval() {
 			return interval;
 		},
-		get trackId() {
-			return trackId;
+		get track() {
+			return track;
 		},
 		viewport
 	});
 </script>
 
-{#if left + width > 0 && left < viewport.width}
+{#if (left + width > 0 && left < viewport.width) || intervalMoveController.dragging}
 	<div
 		class={[
 			'absolute h-full cursor-default overflow-hidden bg-linear-to-t from-green-300 to-green-200 text-center',
@@ -55,6 +61,7 @@
 		<div
 			class="relative flex h-full w-max items-center justify-center gap-2 px-2"
 			style="left: {innerPlacementOffset}px;"
+			{@attach intervalMoveController.attach}
 		>
 			<button {@attach draggable.attachHandle} class="cursor-grab">
 				<span class="sr-only"> Dragging Area </span>

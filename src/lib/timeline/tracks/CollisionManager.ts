@@ -17,16 +17,33 @@ export function detectIntervalsCollision(
 export function detectIntervalToTracksMovingCollision(
     intervalRepo: IntervalRepository,
     targetTrack: Track,
-    intervalId: string,
+    checkedInterval: Interval,
 ) {
-    const source = intervalRepo.intervals.get(intervalId)!;
-
     return targetTrack.intervals.some((targetIntervalId) => {
         const target = intervalRepo.intervals.get(targetIntervalId)!;
 
         return detectIntervalsCollision(
-            source,
+            checkedInterval,
             target,
+        );
+    });
+}
+
+export function detectIntervalMovementCollision(
+    intervalRepo: IntervalRepository,
+    track: Track,
+    checkedInterval: Interval,
+) {
+    return track.intervals.some((targetIntervalId) => {
+        const comparableInterval = intervalRepo.intervals.get(
+            targetIntervalId,
+        )!;
+
+        if (checkedInterval.id === comparableInterval.id) return false;
+
+        return detectIntervalsCollision(
+            checkedInterval,
+            comparableInterval,
         );
     });
 }
