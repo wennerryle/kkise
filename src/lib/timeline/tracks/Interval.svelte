@@ -3,7 +3,7 @@
 	import Grip from 'lucide-svelte/icons/grip';
 	import { getViewportContext } from '../viewport-context';
 	import { createDraggable } from '$lib/core/dndkit';
-	import { IntervalMoveController } from './IntervalMoveController';
+	import { IntervalXMoveController } from './IntervalXMoveController';
 
 	interface Props {
 		trackId: string;
@@ -30,7 +30,15 @@
 		}
 	});
 
-	const intervalMoveController = $derived(new IntervalMoveController(interval, viewport));
+	const intervalMoveController = new IntervalXMoveController({
+		get interval() {
+			return interval;
+		},
+		get trackId() {
+			return trackId;
+		},
+		viewport
+	});
 </script>
 
 {#if left + width > 0 && left < viewport.width}

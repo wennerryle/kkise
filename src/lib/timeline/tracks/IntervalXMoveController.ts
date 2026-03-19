@@ -1,15 +1,20 @@
 import type { Attachment } from "svelte/attachments";
 import type { Interval } from "../repos/Repositories.svelte";
 import type { Viewport } from "../core/Viewport.svelte";
+import { clamp } from "es-toolkit";
 
-export class IntervalMoveController {
-    ref: HTMLElement | null = null;
+interface IntervalXMoveControllerOptions {
     interval: Interval;
     viewport: Viewport;
+    trackId: string;
+}
 
-    constructor(interval: Interval, viewport: Viewport) {
-        this.interval = interval;
-        this.viewport = viewport;
+export class IntervalXMoveController {
+    ref: HTMLElement | null = null;
+    options: IntervalXMoveControllerOptions;
+
+    constructor(options: IntervalXMoveControllerOptions) {
+        this.options = options;
     }
 
     attach: Attachment<HTMLElement> = (element) => {
@@ -43,12 +48,14 @@ export class IntervalMoveController {
     onpointermove = ({ movementX }: PointerEvent) => {
         const dpr = window.devicePixelRatio || 1;
 
-        this.interval.offset = Math.max(
-            0,
-            this.interval.offset +
-                (movementX / dpr) / this.viewport.zoomLevelMs,
-        );
+        const movement = this.options.interval.offset +
+            (movementX / dpr) / this.options.viewport.zoomLevelMs;
 
-        console.log(movementX);
+        this.options.interval.offset = clamp(
+            movement,
+            0,
+            this.options.viewport.totalDuration -
+                this.options.interval.duration,
+        );
     };
 }
