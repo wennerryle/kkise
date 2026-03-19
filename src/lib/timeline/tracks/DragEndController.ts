@@ -5,13 +5,19 @@ import {
     type TrackDroppableData,
 } from "$lib/core/dndkit";
 import { move } from "@dnd-kit/helpers";
-import type { TrackRepository } from "../repos/Repositories.svelte";
+import type {
+    IntervalRepository,
+    TrackRepository,
+} from "../repos/Repositories.svelte";
+import { CollisionManager } from "./CollisionManager";
 
 export class DragEndController {
     trackRepo: TrackRepository;
+    collisionManager: CollisionManager;
 
-    constructor(trackRepo: TrackRepository) {
+    constructor(trackRepo: TrackRepository, intervalRepo: IntervalRepository) {
         this.trackRepo = trackRepo;
+        this.collisionManager = new CollisionManager(intervalRepo);
     }
 
     onDragEnd: DnDEvents["onDragEnd"] = (event, manager) => {
@@ -53,6 +59,17 @@ export class DragEndController {
 
         const sourceTrack = this.trackRepo.tracks.get(sourceDataTrack.trackId)!;
         const targetTrack = this.trackRepo.tracks.get(targetDataTrack.trackId)!;
+
+        if (
+            targetTrack.intervals.some((iteratingIntervalId) =>
+                this.collisionManager.detectIntervalsCollision(
+                    intervalId,
+                    iteratingIntervalId,
+                )
+            )
+        ) {
+            return;
+        }
 
         sourceTrack.intervals = sourceTrack.intervals.filter((it) =>
             it !== intervalId

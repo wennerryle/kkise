@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { DragDropProvider } from '@dnd-kit/svelte';
-	import { getTrackRepository } from '../repositories-context';
+	import { getIntervalRepository, getTrackRepository } from '../repositories-context';
 	import { dev } from '$app/environment';
 	import { RestrictToVerticalAxis } from '@dnd-kit/abstract/modifiers';
 	import Track from './Track.svelte';
 	import { DragEndController } from './DragEndController';
 
 	const trackRepo = getTrackRepository();
-	const dragEndController = new DragEndController(trackRepo);
+	const intervalRepo = getIntervalRepository();
+	const dragEndController = new DragEndController(trackRepo, intervalRepo);
 </script>
 
 <!--
