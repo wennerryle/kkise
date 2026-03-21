@@ -25,8 +25,6 @@ export class DragEndController {
         const sourceId = event.operation.source?.id as string;
         const targetId = event.operation.target?.id as string;
 
-        if (sourceId === targetId) return;
-
         const sourceData = event.operation.source?.data as DnDData | undefined;
         const targetData = event.operation.target?.data as DnDData | undefined;
 
@@ -36,6 +34,8 @@ export class DragEndController {
             this.handleTracksMove(event, manager);
             return;
         }
+
+        if (sourceId === targetId) return;
 
         if (sourceData.tag === "interval" && targetData.tag === "track") {
             this.handleIntervalsMoveAcrossTracks(
