@@ -15,13 +15,17 @@ export class IntervalRepository {
             const gapS = 1000;
             const size = 8 * 1000;
 
-            this.addInterval(
+            this.add(
                 new Interval("interval" + (i + 1), (gapS + size) * i, size),
             );
         }
     }
 
-    addInterval(interval: Interval) {
+    add(interval: Interval) {
         this.intervals.set(interval.id, interval);
+    }
+
+    get(id: string): Interval | undefined {
+        return this.intervals.get(id);
     }
 }

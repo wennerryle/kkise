@@ -1,15 +1,24 @@
-export class Interval {
-    /** Unique ID for interval */
+export interface IntervalLike {
     id: string;
-    /** Offset in milliseconds (start of interval in track) */
     offset: number;
-    /** Duration in milliseconds */
+    duration: number;
+}
+
+export class Interval implements IntervalLike {
+    id: string;
+    /** ms */
+    offset: number;
+    /** ms */
     duration: number;
 
     constructor(id: string, offset: number, duration: number) {
         this.id = $state(id);
         this.offset = $state(offset);
         this.duration = $state(duration);
+    }
+
+    get end() {
+        return this.offset + this.duration;
     }
 
     debug() {
