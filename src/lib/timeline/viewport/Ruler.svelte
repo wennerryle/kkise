@@ -119,9 +119,11 @@
 	});
 
 	$effect(() => {
+		/* eslint-disable @typescript-eslint/no-unused-expressions */
 		viewport.zoomLevelMs;
 		viewport.scrollLeft;
 		viewport.totalDuration;
+		/* eslint-enable @typescript-eslint/no-unused-expressions */
 
 		if (ctx) {
 			requestAnimationFrame(draw);
