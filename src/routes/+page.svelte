@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Viewport from '$lib/timeline/components/Viewport.svelte';
+	import TimelineEditor from '$lib/timeline/TimelineEditor.svelte';
 </script>
 
 <div>
-	<Viewport />
+	<TimelineEditor />
 </div>

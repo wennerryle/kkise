@@ -1,15 +1,14 @@
 <script lang="ts">
 	import { createDroppable, createSortable } from '$lib/core/dndkit';
 	import { Popover } from 'bits-ui';
-	import { getViewportContext } from '../viewport-context';
 	import { TimelineRulerController } from '../controllers/TimelineRulerController';
 	import Interval from './Interval.svelte';
-	import { getIntervalRepository } from '../repositories-context';
 	import { onMount } from 'svelte';
 	import { Track } from '../state/Track.svelte';
 
 	import EllipsisVertical from '@lucide/svelte/icons/ellipsis-vertical';
 	import Grip from '@lucide/svelte/icons/grip';
+	import { getTimelineContext } from '../context/timeline-context';
 
 	interface Props {
 		track: Track;
@@ -46,15 +45,14 @@
 		}
 	});
 
-	const viewport = getViewportContext();
-	const intervalRepo = getIntervalRepository();
+	const timelineCtx = getTimelineContext();
 
-	const timelineRulerController = new TimelineRulerController(viewport);
+	const timelineRulerController = new TimelineRulerController(timelineCtx);
 </script>
 
 <div {@attach sortable?.attach} class="z-10 flex w-full flex-row">
 	<div
-		style="width: {viewport.trackHeaderWidth}px;"
+		style="width: {timelineCtx.viewport.trackHeaderWidth}px;"
 		class={[
 			'z-20 flex justify-between gap-2 border-y border-r border-slate-200 bg-gray-50 px-2.5 py-1 transition-shadow',
 			sortable?.isDragging && 'shadow-2xl'
@@ -107,7 +105,7 @@
 		{...timelineRulerController.handlers}
 	>
 		{#each track.intervals as intervalId (intervalId)}
-			{@const interval = intervalRepo.intervals.get(intervalId)!}
+			{@const interval = timelineCtx.intervalRepository.intervals.get(intervalId)!}
 			<Interval trackId={track.id} {interval} />
 		{/each}
 	</div>

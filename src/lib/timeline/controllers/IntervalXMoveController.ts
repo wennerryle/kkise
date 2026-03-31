@@ -1,94 +1,90 @@
-import type { Attachment } from "svelte/attachments";
-import { clamp } from "es-toolkit";
-import { Interval } from "../state/Interval.svelte";
-import type { IntervalRepository } from "../state/IntervalRepository.svelte";
-import type { Track } from "../state/Track.svelte";
-import type { Viewport } from "../state/Viewport.svelte";
-import { detectIntervalMovementCollision } from "../logic/collision";
+import type { Attachment } from 'svelte/attachments';
+import { clamp } from 'es-toolkit';
+import { Interval } from '../state/Interval.svelte';
+import { detectIntervalMovementCollision } from '../logic/collision';
+import type { TimelineContext } from '../context/TimelineContext.svelte';
 
 interface IntervalXMoveControllerOptions {
-    intervalRepo: IntervalRepository;
-    interval: Interval;
-    viewport: Viewport;
-    track: Track;
+	timelineCtx: TimelineContext;
+	interval: Interval;
+	trackId: string;
 }
 
 export class IntervalXMoveController {
-    ref: HTMLElement | null = null;
-    options: IntervalXMoveControllerOptions;
+	ref: HTMLElement | null = null;
+	options: IntervalXMoveControllerOptions;
 
-    dragging = false;
+	dragging = false;
 
-    constructor(options: IntervalXMoveControllerOptions) {
-        this.options = options;
-    }
+	constructor(options: IntervalXMoveControllerOptions) {
+		this.options = options;
+	}
 
-    attach: Attachment<HTMLElement> = (element) => {
-        this.ref = element;
+	attach: Attachment<HTMLElement> = (element) => {
+		this.ref = element;
 
-        element.addEventListener("pointerdown", this.onpointerdown);
-        element.addEventListener("pointerup", this.onpointerup);
+		element.addEventListener('pointerdown', this.onpointerdown);
+		element.addEventListener('pointerup', this.onpointerup);
 
-        return () => {
-            element.removeEventListener("pointerdown", this.onpointerdown);
-            element.removeEventListener("pointerup", this.onpointerup);
-            element.removeEventListener("pointermove", this.onpointermove);
-            this.ref = null;
-        };
-    };
+		return () => {
+			element.removeEventListener('pointerdown', this.onpointerdown);
+			element.removeEventListener('pointerup', this.onpointerup);
+			element.removeEventListener('pointermove', this.onpointermove);
+			this.ref = null;
+		};
+	};
 
-    relativeMovement = 0;
+	relativeMovement = 0;
 
-    onpointerdown = (event: PointerEvent) => {
-        if (event.target !== event.currentTarget) return;
+	onpointerdown = (event: PointerEvent) => {
+		if (event.target !== event.currentTarget) return;
 
-        this.dragging = true;
+		this.dragging = true;
 
-        (event.target as HTMLElement).setPointerCapture(event.pointerId);
-        this.ref!.addEventListener("pointermove", this.onpointermove);
-        this.relativeMovement = 0;
-    };
+		(event.target as HTMLElement).setPointerCapture(event.pointerId);
+		this.ref!.addEventListener('pointermove', this.onpointermove);
+		this.relativeMovement = 0;
+	};
 
-    onpointerup = (event: PointerEvent) => {
-        if (event.target !== event.currentTarget) return;
+	onpointerup = (event: PointerEvent) => {
+		if (event.target !== event.currentTarget) return;
 
-        this.dragging = false;
+		this.dragging = false;
 
-        (event.target as HTMLElement).releasePointerCapture(event.pointerId);
-        this.ref!.removeEventListener("pointermove", this.onpointermove);
-        this.relativeMovement = 0;
-    };
+		(event.target as HTMLElement).releasePointerCapture(event.pointerId);
+		this.ref!.removeEventListener('pointermove', this.onpointermove);
+		this.relativeMovement = 0;
+	};
 
-    onpointermove = ({ movementX }: PointerEvent) => {
-        const dpr = window.devicePixelRatio || 1;
+	onpointermove = ({ movementX }: PointerEvent) => {
+		const dpr = window.devicePixelRatio || 1;
 
-        const relativeMovement = (movementX / dpr) /
-            this.options.viewport.zoomLevelMs;
+		const relativeMovement = movementX / dpr / this.options.timelineCtx.viewport.zoomLevelMs;
 
-        this.relativeMovement += relativeMovement;
+		this.relativeMovement += relativeMovement;
 
-        const offset = clamp(
-            this.options.interval.offset +
-                relativeMovement,
-            0,
-            this.options.viewport.totalDuration -
-                this.options.interval.duration,
-        );
+		const offset = clamp(
+			this.options.interval.offset + relativeMovement,
+			0,
+			this.options.timelineCtx.player.totalDuration - this.options.interval.duration
+		);
 
-        const proxyInterval = new Interval(
-            this.options.interval.id,
-            relativeMovement,
-            this.options.interval.duration,
-        );
+		const proxyInterval = new Interval(
+			this.options.interval.id,
+			relativeMovement,
+			this.options.interval.duration
+		);
 
-        const isCollision = detectIntervalMovementCollision(
-            this.options.intervalRepo,
-            this.options.track,
-            proxyInterval,
-        );
+		const track = this.options.timelineCtx.trackRepository.get(this.options.trackId)!;
 
-        if (isCollision) return;
+		const isCollision = detectIntervalMovementCollision(
+			this.options.timelineCtx.intervalRepository,
+			track,
+			proxyInterval
+		);
 
-        this.options.interval.offset = offset;
-    };
+		if (isCollision) return;
+
+		this.options.interval.offset = offset;
+	};
 }

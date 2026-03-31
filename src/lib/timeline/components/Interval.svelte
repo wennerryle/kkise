@@ -1,9 +1,8 @@
 <script lang="ts">
 	import Grip from '@lucide/svelte/icons/grip';
-	import { getViewportContext } from '../viewport-context';
 	import { createDraggable } from '$lib/core/dndkit';
+	import { getTimelineContext } from '../context/timeline-context';
 	import { IntervalXMoveController } from '../controllers/IntervalXMoveController';
-	import { getIntervalRepository, getTrackRepository } from '../repositories-context';
 	import type { Interval } from '../state/Interval.svelte';
 	import { IntervalResizeController } from '../controllers/IntervalResizeController';
 
@@ -14,10 +13,12 @@
 
 	const { trackId, interval }: Props = $props();
 
-	const viewport = getViewportContext();
+	const timelineCtx = getTimelineContext();
 
-	const left = $derived(interval.offset * viewport.zoomLevelMs - viewport.scrollLeft);
-	const width = $derived(interval.duration * viewport.zoomLevelMs);
+	const left = $derived(
+		interval.offset * timelineCtx.viewport.zoomLevelMs - timelineCtx.viewport.scrollLeft
+	);
+	const width = $derived(interval.duration * timelineCtx.viewport.zoomLevelMs);
 	const innerPlacementOffset = $derived(left < 0 ? left * -1 : 0);
 
 	const draggable = createDraggable({
@@ -32,30 +33,25 @@
 		}
 	});
 
-	const intervalRepo = getIntervalRepository();
-	const trackRepo = getTrackRepository();
-	const track = $derived(trackRepo.tracks.get(trackId)!);
-
 	const intervalMoveController = new IntervalXMoveController({
-		intervalRepo,
 		get interval() {
 			return interval;
 		},
-		get track() {
-			return track;
+		get trackId() {
+			return trackId;
 		},
-		viewport
+		timelineCtx
 	});
 
 	const intervalResizeController = new IntervalResizeController({
 		get interval() {
 			return interval;
 		},
-		viewport
+		timelineCtx
 	});
 </script>
 
-{#if (left + width > 0 && left < viewport.width) || intervalMoveController.dragging}
+{#if (left + width > 0 && left < timelineCtx.viewport.width) || intervalMoveController.dragging}
 	<div
 		class={[
 			'absolute h-full cursor-default overflow-hidden bg-linear-to-t from-green-300 to-green-200 text-center',

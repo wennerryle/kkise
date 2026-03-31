@@ -2,9 +2,9 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { formatTime } from '../logic/time';
 	import { TimelineRulerController } from '../controllers/TimelineRulerController';
-	import { getViewportContext } from '../viewport-context';
+	import { getTimelineContext } from '../context/timeline-context';
 
-	const viewport = getViewportContext();
+	const timelineContext = getTimelineContext();
 
 	let canvas: HTMLCanvasElement;
 	let ctx: CanvasRenderingContext2D | null;
@@ -46,6 +46,8 @@
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'top';
 
+		const viewport = timelineContext.viewport;
+
 		const zoomLevel = viewport.zoomLevelSec;
 
 		const visibleWidthCss = width / dpr;
@@ -57,7 +59,7 @@
 		else if (zoomLevel < 30) step = 10;
 		else if (zoomLevel < 60) step = 5;
 
-		const totalDurationInSeconds = viewport.totalDuration / 1000;
+		const totalDurationInSeconds = timelineContext.player.totalDuration / 1000;
 
 		for (let i = startSeconds; i <= endSeconds; i++) {
 			if (i < 0 || i > totalDurationInSeconds) continue;
@@ -95,7 +97,7 @@
 		dpr = window.devicePixelRatio || 1;
 		const rect = container.getBoundingClientRect();
 
-		viewport.width = rect.width;
+		timelineContext.viewport.width = rect.width;
 
 		canvas.width = rect.width * dpr;
 		canvas.height = rect.height * dpr;
@@ -120,9 +122,9 @@
 
 	$effect(() => {
 		/* eslint-disable @typescript-eslint/no-unused-expressions */
-		viewport.zoomLevelMs;
-		viewport.scrollLeft;
-		viewport.totalDuration;
+		timelineContext.viewport.zoomLevelMs;
+		timelineContext.viewport.scrollLeft;
+		timelineContext.player.totalDuration;
 		/* eslint-enable @typescript-eslint/no-unused-expressions */
 
 		if (ctx) {
@@ -130,12 +132,12 @@
 		}
 	});
 
-	const timelineController = new TimelineRulerController(viewport);
+	const timelineController = new TimelineRulerController(timelineContext);
 </script>
 
 <div
 	bind:this={container}
-	style="--track-header-width: {viewport.trackHeaderWidth - 1}px"
+	style="--track-header-width: {timelineContext.viewport.trackHeaderWidth - 1}px"
 	class={[
 		'absolute right-0 h-full min-h-12 w-[calc(100%-var(--track-header-width))] cursor-e-resize overflow-hidden border-b border-l border-slate-200 select-none'
 	]}
