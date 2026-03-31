@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { Interval } from '../repos/Repositories.svelte';
-	import Grip from 'lucide-svelte/icons/grip';
+	import Grip from '@lucide/svelte/icons/grip';
 	import { getViewportContext } from '../viewport-context';
 	import { createDraggable } from '$lib/core/dndkit';
-	import { IntervalXMoveController } from './IntervalXMoveController';
+	import { IntervalXMoveController } from '../controllers/IntervalXMoveController';
 	import { getIntervalRepository, getTrackRepository } from '../repositories-context';
-	import { IntervalResizeController } from './IntervalResizeController';
+	import type { Interval } from '../state/Interval.svelte';
+	import { IntervalResizeController } from '../controllers/IntervalResizeController';
 
 	interface Props {
 		trackId: string;
@@ -70,14 +70,16 @@
 			style="left: {innerPlacementOffset}px; width: {width - innerPlacementOffset}px;"
 			{@attach intervalMoveController.attach}
 		>
-			<div
+			<button
 				class="absolute left-0 h-full w-2 cursor-e-resize bg-transparent transition-colors hover:bg-green-500"
 				{@attach intervalResizeController.leftControllerAttachment}
-			></div>
-			<div
+				aria-label="resize left"
+			></button>
+			<button
 				class="absolute right-0 h-full w-2 cursor-e-resize bg-transparent transition-colors hover:bg-green-500"
 				{@attach intervalResizeController.rightControllerAttachment}
-			></div>
+				aria-label="resize right"
+			></button>
 			<button {@attach draggable.attachHandle} class="cursor-grab">
 				<span class="sr-only"> Dragging Area </span>
 				<Grip class="size-3.5" />

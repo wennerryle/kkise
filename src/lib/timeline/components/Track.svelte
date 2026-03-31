@@ -1,14 +1,15 @@
 <script lang="ts">
 	import { createDroppable, createSortable } from '$lib/core/dndkit';
-	import Grip from 'lucide-svelte/icons/grip';
-	import EllipsisVertical from 'lucide-svelte/icons/ellipsis-vertical';
 	import { Popover } from 'bits-ui';
 	import { getViewportContext } from '../viewport-context';
-	import { TimelineRulerController } from '../core/TimelineRulerController';
+	import { TimelineRulerController } from '../controllers/TimelineRulerController';
 	import Interval from './Interval.svelte';
-	import { type Track } from '../repos/Repositories.svelte';
 	import { getIntervalRepository } from '../repositories-context';
 	import { onMount } from 'svelte';
+	import { Track } from '../state/Track.svelte';
+
+	import EllipsisVertical from '@lucide/svelte/icons/ellipsis-vertical';
+	import Grip from '@lucide/svelte/icons/grip';
 
 	interface Props {
 		track: Track;

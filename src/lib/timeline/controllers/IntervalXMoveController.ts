@@ -1,12 +1,10 @@
 import type { Attachment } from "svelte/attachments";
-import {
-    Interval,
-    type IntervalRepository,
-    type Track,
-} from "../repos/Repositories.svelte";
-import type { Viewport } from "../core/Viewport.svelte";
 import { clamp } from "es-toolkit";
-import { detectIntervalMovementCollision } from "./CollisionManager";
+import { Interval } from "../state/Interval.svelte";
+import type { IntervalRepository } from "../state/IntervalRepository.svelte";
+import type { Track } from "../state/Track.svelte";
+import type { Viewport } from "../state/Viewport.svelte";
+import { detectIntervalMovementCollision } from "../logic/collision";
 
 interface IntervalXMoveControllerOptions {
     intervalRepo: IntervalRepository;
@@ -39,6 +37,8 @@ export class IntervalXMoveController {
         };
     };
 
+    relativeMovement = 0;
+
     onpointerdown = (event: PointerEvent) => {
         if (event.target !== event.currentTarget) return;
 
@@ -46,6 +46,7 @@ export class IntervalXMoveController {
 
         (event.target as HTMLElement).setPointerCapture(event.pointerId);
         this.ref!.addEventListener("pointermove", this.onpointermove);
+        this.relativeMovement = 0;
     };
 
     onpointerup = (event: PointerEvent) => {
@@ -55,24 +56,28 @@ export class IntervalXMoveController {
 
         (event.target as HTMLElement).releasePointerCapture(event.pointerId);
         this.ref!.removeEventListener("pointermove", this.onpointermove);
+        this.relativeMovement = 0;
     };
 
     onpointermove = ({ movementX }: PointerEvent) => {
         const dpr = window.devicePixelRatio || 1;
 
-        const movement = clamp(
+        const relativeMovement = (movementX / dpr) /
+            this.options.viewport.zoomLevelMs;
+
+        this.relativeMovement += relativeMovement;
+
+        const offset = clamp(
             this.options.interval.offset +
-                (movementX / dpr) / this.options.viewport.zoomLevelMs,
+                relativeMovement,
             0,
             this.options.viewport.totalDuration -
                 this.options.interval.duration,
         );
 
-        if (movement === this.options.interval.offset) return;
-
         const proxyInterval = new Interval(
             this.options.interval.id,
-            movement,
+            relativeMovement,
             this.options.interval.duration,
         );
 
@@ -84,6 +89,6 @@ export class IntervalXMoveController {
 
         if (isCollision) return;
 
-        this.options.interval.offset = movement;
+        this.options.interval.offset = offset;
     };
 }

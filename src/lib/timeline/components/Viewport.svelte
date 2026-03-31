@@ -1,11 +1,12 @@
 <script lang="ts">
 	import Ruler from './Ruler.svelte';
 
-	import { Viewport } from '../core/Viewport.svelte';
-	import TrackList from '../tracks/TrackList.svelte';
+	import { Viewport } from '../state/Viewport.svelte';
+	import TrackList from './TrackList.svelte';
 	import { setViewportContext } from '../viewport-context';
 	import { setIntervalRepository, setTrackRepository } from '../repositories-context';
-	import { IntervalRepository, TrackRepository } from '../repos/Repositories.svelte';
+	import { IntervalRepository } from '../state/IntervalRepository.svelte';
+	import { TrackRepository } from '../state/TrackRepository.svelte';
 
 	setViewportContext(new Viewport());
 	setIntervalRepository(new IntervalRepository());

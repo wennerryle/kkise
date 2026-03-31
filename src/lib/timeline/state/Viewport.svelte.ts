@@ -3,7 +3,7 @@ export class Viewport {
     width = $state(0);
 
     /** Total duration in ms */
-    totalDuration = $state(600 * 1000);
+    totalDuration = $state(60 * 1000);
 
     /** How much pixels taken by 1ms */
     zoomLevelMs = $state(100 / 1000); /** 100px per second */

@@ -1,6 +1,7 @@
-import { Viewport } from "../core/Viewport.svelte";
-import type { Interval } from "../repos/Repositories.svelte";
 import type { Attachment } from "svelte/attachments";
+import { clamp } from "es-toolkit";
+import type { Interval } from "../state/Interval.svelte";
+import type { Viewport } from "../state/Viewport.svelte";
 
 interface IntervalResizeControllerOptions {
     interval: Interval;
@@ -39,16 +40,22 @@ export class IntervalResizeController {
 
     onLeftPointerMove = ({ movementX }: PointerEvent) => {
         const dpr = window.devicePixelRatio || 1;
-        const taken = movementX / dpr / this.options.viewport.zoomLevelMs;
+        const delta = movementX / dpr / this.options.viewport.zoomLevelMs;
 
-        const offset = this.options.interval.offset;
+        const { offset, duration } = this.options.interval;
 
-        const duration = this.options.interval.duration;
-        this.options.interval.duration = Math.max(200, duration + taken * -1);
+        let safeDelta = delta;
 
-        if (duration !== 200) {
-            this.options.interval.offset = Math.max(0, offset + taken);
+        if (offset + safeDelta < 0) {
+            safeDelta = -offset;
         }
+
+        if (duration - safeDelta < 200) {
+            safeDelta = duration - 200;
+        }
+
+        this.options.interval.duration -= safeDelta;
+        this.options.interval.offset += safeDelta;
     };
 
     rightControllerAttachment: Attachment<HTMLElement> = (element) => {
@@ -76,10 +83,17 @@ export class IntervalResizeController {
 
     onRightPointerMove = ({ movementX }: PointerEvent) => {
         const dpr = window.devicePixelRatio || 1;
-        const taken = movementX / dpr / this.options.viewport.zoomLevelMs;
+        const delta = movementX / dpr / this.options.viewport.zoomLevelMs;
 
-        const duration = this.options.interval.duration;
+        const { offset, duration } = this.options.interval;
+        const { totalDuration } = this.options.viewport;
 
-        this.options.interval.duration = Math.max(200, duration + taken);
+        const maxAvailable = totalDuration - offset;
+
+        this.options.interval.duration = clamp(
+            duration + delta,
+            200,
+            maxAvailable,
+        );
     };
 }

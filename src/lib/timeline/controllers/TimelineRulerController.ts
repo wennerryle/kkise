@@ -1,5 +1,5 @@
-import { MouseButtons } from "./constants.ts";
-import type { Viewport } from "./Viewport.svelte.ts";
+import type { Viewport } from "../state/Viewport.svelte.ts";
+import { MouseButtons } from "../logic/constants.ts";
 import type { HTMLAttributes } from "svelte/elements";
 
 export class TimelineRulerController {

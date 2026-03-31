@@ -1,7 +1,6 @@
-import {
-    type IntervalRepository,
-    TrackRepository,
-} from "./repos/Repositories.svelte";
+import type { IntervalRepository } from "./state/IntervalRepository.svelte";
+import type { TrackRepository } from "./state/TrackRepository.svelte";
+
 import { createContext } from "svelte";
 
 export const [getIntervalRepository, setIntervalRepository] = createContext<

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { formatTime } from '../core/utils';
-	import { TimelineRulerController } from '../core/TimelineRulerController';
+	import { formatTime } from '../logic/time';
+	import { TimelineRulerController } from '../controllers/TimelineRulerController';
 	import { getViewportContext } from '../viewport-context';
 
 	const viewport = getViewportContext();

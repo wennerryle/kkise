@@ -5,12 +5,10 @@ import {
     type TrackDroppableData,
 } from "$lib/core/dndkit";
 import { move } from "@dnd-kit/helpers";
-import type {
-    IntervalRepository,
-    TrackRepository,
-} from "../repos/Repositories.svelte";
 
-import { detectIntervalToTracksMovingCollision } from "./CollisionManager";
+import { detectIntervalToTracksMovingCollision } from "../logic/collision";
+import type { IntervalRepository } from "../state/IntervalRepository.svelte";
+import type { TrackRepository } from "../state/TrackRepository.svelte";
 
 export class DragEndController {
     trackRepo: TrackRepository;

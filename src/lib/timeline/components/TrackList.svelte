@@ -4,7 +4,7 @@
 	import { dev } from '$app/environment';
 	import { RestrictToVerticalAxis } from '@dnd-kit/abstract/modifiers';
 	import Track from './Track.svelte';
-	import { DragEndController } from './DragEndController';
+	import { DragEndController } from '../controllers/DragEndController';
 
 	const trackRepo = getTrackRepository();
 	const intervalRepo = getIntervalRepository();
