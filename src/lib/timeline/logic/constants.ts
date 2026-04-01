@@ -2,16 +2,16 @@
  * docs: https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons
  */
 export enum MouseButtons {
-    /** Кнопки не нажаты */
-    None = 0,
-    /** Левая кнопка (обычно) */
-    Primary = 1,
-    /** Правая кнопка */
-    Secondary = 2,
-    /** Колесико (средняя кнопка) */
-    Auxiliary = 4,
-    /** Боковая кнопка "Назад" */
-    Fourth = 8,
-    /** Боковая кнопка "Вперед" */
-    Fifth = 16,
+	/** MouseButtons not pressed */
+	None = 0,
+	/** Left button (usually) */
+	Primary = 1,
+	/** Right button */
+	Secondary = 2,
+	/** Wheel (middle button) */
+	Auxiliary = 4,
+	/** Side button "back" */
+	Fourth = 8,
+	/** Side button "forward" */
+	Fifth = 16
 }

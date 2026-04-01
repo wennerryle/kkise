@@ -36,11 +36,9 @@
 		}
 	});
 
-	const intervalMoveController = new IntervalXMovementController({
-		createCommand() {
-			return new IntervalXMovementCommand(timelineCtx, trackId, interval);
-		}
-	});
+	const intervalMoveController = new IntervalXMovementController(
+		() => new IntervalXMovementCommand(timelineCtx, trackId, interval)
+	);
 
 	const intervalResizeController = new IntervalResizeController({
 		get interval() {

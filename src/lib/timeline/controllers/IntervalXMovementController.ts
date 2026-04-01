@@ -1,18 +1,15 @@
 import type { Attachment } from 'svelte/attachments';
 import type { IntervalXMovementCommand } from '../commands/IntervalXMovementCommand';
 
-interface IntervalXMoveControllerOptions {
-	createCommand: () => IntervalXMovementCommand;
-}
-
 export class IntervalXMovementController {
 	ref: HTMLElement | null = null;
-	options: IntervalXMoveControllerOptions;
 
 	dragging = false;
 
-	constructor(options: IntervalXMoveControllerOptions) {
-		this.options = options;
+	createCommand: () => IntervalXMovementCommand;
+
+	constructor(createCommand: () => IntervalXMovementCommand) {
+		this.createCommand = createCommand;
 	}
 
 	readonly attach: Attachment<HTMLElement> = (element) => {
@@ -39,7 +36,7 @@ export class IntervalXMovementController {
 		(event.target as HTMLElement).setPointerCapture(event.pointerId);
 		this.ref!.addEventListener('pointermove', this.onpointermove);
 
-		this.command = this.options.createCommand();
+		this.command = this.createCommand();
 	};
 
 	private readonly onpointerup = (event: PointerEvent) => {
@@ -56,6 +53,6 @@ export class IntervalXMovementController {
 		const dpr = window.devicePixelRatio || 1;
 		const relativeMovement = movementX / dpr;
 
-		this.command!.execute(relativeMovement);
+		this.command!.update(relativeMovement);
 	};
 }
