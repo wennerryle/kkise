@@ -1,10 +1,12 @@
 <script lang="ts">
+	import type { Interval } from '../state/Interval.svelte';
+
 	import Grip from '@lucide/svelte/icons/grip';
 	import { createDraggable } from '$lib/core/dndkit';
 	import { getTimelineContext } from '../context/timeline-context';
-	import { IntervalXMoveController } from '../controllers/IntervalXMoveController';
-	import type { Interval } from '../state/Interval.svelte';
+	import { IntervalXMovementController } from '../controllers/IntervalXMovementController';
 	import { IntervalResizeController } from '../controllers/IntervalResizeController';
+	import { IntervalXMovementCommand } from '../commands/IntervalXMovementCommand';
 
 	interface Props {
 		trackId: string;
@@ -18,6 +20,7 @@
 	const left = $derived(
 		interval.offset * timelineCtx.viewport.zoomLevelMs - timelineCtx.viewport.scrollLeft
 	);
+
 	const width = $derived(interval.duration * timelineCtx.viewport.zoomLevelMs);
 	const innerPlacementOffset = $derived(left < 0 ? left * -1 : 0);
 
@@ -33,14 +36,10 @@
 		}
 	});
 
-	const intervalMoveController = new IntervalXMoveController({
-		get interval() {
-			return interval;
-		},
-		get trackId() {
-			return trackId;
-		},
-		timelineCtx
+	const intervalMoveController = new IntervalXMovementController({
+		createCommand() {
+			return new IntervalXMovementCommand(timelineCtx, trackId, interval);
+		}
 	});
 
 	const intervalResizeController = new IntervalResizeController({

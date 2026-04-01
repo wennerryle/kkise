@@ -9,13 +9,13 @@ interface IntervalResizeControllerOptions {
 }
 
 export class IntervalResizeController {
-	options: IntervalResizeControllerOptions;
+	readonly options: IntervalResizeControllerOptions;
 
 	constructor(options: IntervalResizeControllerOptions) {
 		this.options = options;
 	}
 
-	leftControllerAttachment: Attachment<HTMLElement> = (element) => {
+	readonly leftControllerAttachment: Attachment<HTMLElement> = (element) => {
 		element.addEventListener('pointerdown', this.onLeftPointerDown);
 		element.addEventListener('pointerup', this.onLeftPointerUp);
 
@@ -26,19 +26,19 @@ export class IntervalResizeController {
 		};
 	};
 
-	onLeftPointerDown = (event: PointerEvent) => {
+	private readonly onLeftPointerDown = (event: PointerEvent) => {
 		const target = event.target as HTMLElement;
 		target.setPointerCapture(event.pointerId);
 		target.addEventListener('pointermove', this.onLeftPointerMove);
 	};
 
-	onLeftPointerUp = (event: PointerEvent) => {
+	private readonly onLeftPointerUp = (event: PointerEvent) => {
 		const target = event.target as HTMLElement;
 		target.releasePointerCapture(event.pointerId);
 		target.removeEventListener('pointermove', this.onLeftPointerMove);
 	};
 
-	onLeftPointerMove = ({ movementX }: PointerEvent) => {
+	private readonly onLeftPointerMove = ({ movementX }: PointerEvent) => {
 		const dpr = window.devicePixelRatio || 1;
 		const delta = movementX / dpr / this.options.timelineCtx.viewport.zoomLevelMs;
 
@@ -58,7 +58,7 @@ export class IntervalResizeController {
 		this.options.interval.offset += safeDelta;
 	};
 
-	rightControllerAttachment: Attachment<HTMLElement> = (element) => {
+	readonly rightControllerAttachment: Attachment<HTMLElement> = (element) => {
 		element.addEventListener('pointerdown', this.onRightPointerDown);
 		element.addEventListener('pointerup', this.onRightPointerUp);
 
@@ -69,19 +69,19 @@ export class IntervalResizeController {
 		};
 	};
 
-	onRightPointerDown = (event: PointerEvent) => {
+	private readonly onRightPointerDown = (event: PointerEvent) => {
 		const target = event.target as HTMLElement;
 		target.setPointerCapture(event.pointerId);
 		target.addEventListener('pointermove', this.onRightPointerMove);
 	};
 
-	onRightPointerUp = (event: PointerEvent) => {
+	private readonly onRightPointerUp = (event: PointerEvent) => {
 		const target = event.target as HTMLElement;
 		target.releasePointerCapture(event.pointerId);
 		target.removeEventListener('pointermove', this.onRightPointerMove);
 	};
 
-	onRightPointerMove = ({ movementX }: PointerEvent) => {
+	private readonly onRightPointerMove = ({ movementX }: PointerEvent) => {
 		const dpr = window.devicePixelRatio || 1;
 		const delta = movementX / dpr / this.options.timelineCtx.viewport.zoomLevelMs;
 

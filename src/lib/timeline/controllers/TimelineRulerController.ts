@@ -11,7 +11,7 @@ export class TimelineRulerController {
 		this.timelineCtx = timelineCtx;
 	}
 
-	handlers: HTMLAttributes<HTMLElement> = {
+	readonly handlers: HTMLAttributes<HTMLElement> = {
 		onpointerdown: (event) => {
 			if (event.target === event.currentTarget) {
 				this.isMouseDragging = true;
@@ -40,18 +40,16 @@ export class TimelineRulerController {
 		onwheel: (event) => {
 			event.preventDefault();
 
-			const container = event.currentTarget;
-			const rect = container.getBoundingClientRect();
-			const mouseX = event.clientX - rect.left;
-			const oldZoom = this.timelineCtx.viewport.zoomLevelSec;
-			const timeAtMouseSec = (this.timelineCtx.viewport.scrollLeft + mouseX) / oldZoom;
+			const mouseX = event.clientX - event.currentTarget.getBoundingClientRect().left;
+			const oldZoom = this.timelineCtx.viewport.zoomLevelMs;
+			const timeAtMouseMs = (this.timelineCtx.viewport.scrollLeft + mouseX) / oldZoom;
 			const zoomSpeed = 0.05;
-			const delta = -event.deltaY * zoomSpeed;
-			const newZoom = Math.max(10, oldZoom + delta);
+			const delta = (-event.deltaY * zoomSpeed) / 1000;
 
-			this.timelineCtx.viewport.zoomLevelMs = newZoom / 1000;
+			const newZoom = oldZoom + delta;
 
-			this.timelineCtx.viewport.scrollLeft = timeAtMouseSec * newZoom - mouseX;
+			this.timelineCtx.viewport.zoomLevelMs = newZoom;
+			this.timelineCtx.viewport.scrollLeft = timeAtMouseMs * newZoom - mouseX;
 		}
 	};
 }

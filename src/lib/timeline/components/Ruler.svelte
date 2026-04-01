@@ -9,7 +9,6 @@
 	let canvas: HTMLCanvasElement;
 	let ctx: CanvasRenderingContext2D | null;
 	let container: HTMLElement;
-	let dpr = 1;
 
 	const slate50 = '#f8fafc';
 	const slate400 = '#94a3b8';
@@ -30,6 +29,7 @@
 
 	function draw() {
 		if (!ctx || !isResized) return;
+		const dpr = window.devicePixelRatio || 1;
 
 		const width = canvas.width;
 		const height = canvas.height;
@@ -94,7 +94,7 @@
 
 	function handleResize() {
 		if (!container || !canvas) return;
-		dpr = window.devicePixelRatio || 1;
+		const dpr = window.devicePixelRatio || 1;
 		const rect = container.getBoundingClientRect();
 
 		timelineContext.viewport.width = rect.width;

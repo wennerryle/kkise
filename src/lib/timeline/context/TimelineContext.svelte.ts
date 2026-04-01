@@ -1,3 +1,4 @@
+import { TimelineLayoutService } from '../services/TimelineLayoutService';
 import { IntervalRepository } from '../state/IntervalRepository.svelte';
 import { Player } from '../state/Player.svelte';
 import { TrackRepository } from '../state/TrackRepository.svelte';
@@ -8,4 +9,13 @@ export class TimelineContext {
 	readonly viewport = new Viewport();
 	readonly trackRepository = new TrackRepository();
 	readonly intervalRepository = new IntervalRepository();
+
+	readonly timelineLayoutService: TimelineLayoutService;
+
+	constructor() {
+		this.timelineLayoutService = new TimelineLayoutService(
+			this.trackRepository,
+			this.intervalRepository
+		);
+	}
 }

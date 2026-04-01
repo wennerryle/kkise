@@ -42,11 +42,11 @@ export class DragEndController {
 		}
 	};
 
-	handleTracksMove: DnDEvents['onDragEnd'] = (event) => {
+	private readonly handleTracksMove: DnDEvents['onDragEnd'] = (event) => {
 		this.trackRepo.tracksIds = move(this.trackRepo.tracksIds, event);
 	};
 
-	handleIntervalsMoveAcrossTracks = (
+	private readonly handleIntervalsMoveAcrossTracks = (
 		sourceDataTrack: IntervalDroppableData,
 		targetDataTrack: TrackDroppableData,
 		intervalId: string
