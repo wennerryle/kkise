@@ -7,48 +7,39 @@ export class IntervalXMovementCommand {
 	#trackId: string;
 	#interval: Interval;
 
+	readonly #initialOffset: number;
+	#totalDeltaMs = 0;
+
 	constructor(timelineCtx: TimelineContext, trackId: string, interval: Interval) {
 		this.#timelineCtx = timelineCtx;
 		this.#trackId = trackId;
 		this.#interval = interval;
+		this.#initialOffset = interval.offset;
 	}
 
-	relativeMovement = 0;
-
-	getMaxOffset() {
+	private getMaxOffset() {
 		return this.#timelineCtx.player.totalDuration - this.#interval.duration;
 	}
 
 	execute(movementX: number) {
+		// Переводим пиксели в мс
 		const movementMs = movementX / this.#timelineCtx.viewport.zoomLevelMs;
-
-		this.relativeMovement += movementMs;
+		this.#totalDeltaMs += movementMs;
 
 		const [left, right] = this.#timelineCtx.timelineLayoutService.getAdjacentIntervals(
 			this.#trackId,
 			this.#interval
 		);
 
+		// Границы
 		const min = left !== null ? left.end : 0;
-
-		right?.debug();
-
 		const max = right !== null ? right.offset - this.#interval.duration : this.getMaxOffset();
 
-		const offset = clamp(this.#interval.offset + movementMs, min, max);
-
-		console.log({
-			min,
-			max,
-			offset,
-			originalOffset: this.#interval.offset,
-			movement: this.relativeMovement
-		});
-
-		this.#interval.offset = offset;
+		// Применяем общее смещение к начальной позиции
+		this.#interval.offset = clamp(this.#initialOffset + this.#totalDeltaMs, min, max);
 	}
 
 	undo() {
-		this.#interval.offset -= this.relativeMovement;
+		this.#interval.offset = this.#initialOffset;
 	}
 }
