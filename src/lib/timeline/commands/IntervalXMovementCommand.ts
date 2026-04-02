@@ -30,18 +30,27 @@ export class IntervalXMovementCommand implements Undoable {
 	}
 
 	#applyPosition() {
-		const movementMs = this.#currentMovementX / this.#timelineCtx.viewport.zoomLevelMs;
+		const ctx = this.#timelineCtx;
+
+		const movementMs = this.#currentMovementX / ctx.viewport.zoomLevelMs;
 		this.#totalDeltaMs += movementMs;
 
-		const [left, right] = this.#timelineCtx.timelineLayoutService.getAdjacentIntervals(
+		const adjacentIntervals = ctx.timelineLayoutService.getAdjacentIntervals(
 			this.#trackId,
 			this.#interval
 		);
 
-		const min = left !== null ? left.end : 0;
-		const max = right !== null ? right.offset - this.#interval.duration : this.getMaxOffset();
+		const offsetLimits = ctx.timelineLayoutService.getMovementLimits(
+			this.#interval,
+			adjacentIntervals,
+			ctx.player.totalDuration
+		);
 
-		this.#interval.offset = clamp(this.#initialOffset + this.#totalDeltaMs, min, max);
+		this.#interval.offset = clamp(
+			this.#initialOffset + this.#totalDeltaMs,
+			offsetLimits.min,
+			offsetLimits.max
+		);
 	}
 
 	execute() {

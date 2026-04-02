@@ -1,18 +1,17 @@
 import type { Attachment } from 'svelte/attachments';
-import { clamp } from 'es-toolkit';
-import type { Interval } from '../state/Interval.svelte';
-import type { TimelineContext } from '../context/TimelineContext.svelte';
-
-interface IntervalResizeControllerOptions {
-	interval: Interval;
-	timelineCtx: TimelineContext;
-}
+import type { IntervalLeftResizeCommand } from '../commands/IntervalLeftResizeCommand';
+import type { IntervalRightResizeCommand } from '../commands/IntervalRightResizeCommand';
 
 export class IntervalResizeController {
-	readonly options: IntervalResizeControllerOptions;
+	readonly #leftCommandFabric: () => IntervalLeftResizeCommand;
+	readonly #rightCommandFabric: () => IntervalRightResizeCommand;
 
-	constructor(options: IntervalResizeControllerOptions) {
-		this.options = options;
+	constructor(
+		leftCommandFabric: () => IntervalLeftResizeCommand,
+		rightCommandFabric: () => IntervalRightResizeCommand
+	) {
+		this.#leftCommandFabric = leftCommandFabric;
+		this.#rightCommandFabric = rightCommandFabric;
 	}
 
 	readonly leftControllerAttachment: Attachment<HTMLElement> = (element) => {
@@ -26,36 +25,24 @@ export class IntervalResizeController {
 		};
 	};
 
+	#intervalLeftResizeCommand: IntervalLeftResizeCommand | null = null;
+
 	private readonly onLeftPointerDown = (event: PointerEvent) => {
 		const target = event.target as HTMLElement;
 		target.setPointerCapture(event.pointerId);
 		target.addEventListener('pointermove', this.onLeftPointerMove);
+		this.#intervalLeftResizeCommand = this.#leftCommandFabric();
 	};
 
 	private readonly onLeftPointerUp = (event: PointerEvent) => {
 		const target = event.target as HTMLElement;
 		target.releasePointerCapture(event.pointerId);
 		target.removeEventListener('pointermove', this.onLeftPointerMove);
+		this.#intervalLeftResizeCommand!.execute();
 	};
 
 	private readonly onLeftPointerMove = ({ movementX }: PointerEvent) => {
-		const dpr = window.devicePixelRatio || 1;
-		const delta = movementX / dpr / this.options.timelineCtx.viewport.zoomLevelMs;
-
-		const { offset, duration } = this.options.interval;
-
-		let safeDelta = delta;
-
-		if (offset + safeDelta < 0) {
-			safeDelta = -offset;
-		}
-
-		if (duration - safeDelta < 200) {
-			safeDelta = duration - 200;
-		}
-
-		this.options.interval.duration -= safeDelta;
-		this.options.interval.offset += safeDelta;
+		this.#intervalLeftResizeCommand!.update(movementX);
 	};
 
 	readonly rightControllerAttachment: Attachment<HTMLElement> = (element) => {
@@ -69,27 +56,26 @@ export class IntervalResizeController {
 		};
 	};
 
+	#intervalRightResizeCommand: IntervalRightResizeCommand | null = null;
+
 	private readonly onRightPointerDown = (event: PointerEvent) => {
 		const target = event.target as HTMLElement;
 		target.setPointerCapture(event.pointerId);
 		target.addEventListener('pointermove', this.onRightPointerMove);
+		this.#intervalRightResizeCommand = this.#rightCommandFabric();
 	};
 
 	private readonly onRightPointerUp = (event: PointerEvent) => {
 		const target = event.target as HTMLElement;
 		target.releasePointerCapture(event.pointerId);
 		target.removeEventListener('pointermove', this.onRightPointerMove);
+		this.#intervalRightResizeCommand!.execute();
 	};
 
 	private readonly onRightPointerMove = ({ movementX }: PointerEvent) => {
 		const dpr = window.devicePixelRatio || 1;
-		const delta = movementX / dpr / this.options.timelineCtx.viewport.zoomLevelMs;
+		const delta = movementX / dpr;
 
-		const { offset, duration } = this.options.interval;
-		const { totalDuration } = this.options.timelineCtx.player;
-
-		const maxAvailable = totalDuration - offset;
-
-		this.options.interval.duration = clamp(duration + delta, 200, maxAvailable);
+		this.#intervalRightResizeCommand!.update(delta);
 	};
 }

@@ -7,6 +7,8 @@
 	import { IntervalXMovementController } from '../controllers/IntervalXMovementController';
 	import { IntervalResizeController } from '../controllers/IntervalResizeController';
 	import { IntervalXMovementCommand } from '../commands/IntervalXMovementCommand';
+	import { IntervalLeftResizeCommand } from '../commands/IntervalLeftResizeCommand';
+	import { IntervalRightResizeCommand } from '../commands/IntervalRightResizeCommand';
 
 	interface Props {
 		trackId: string;
@@ -40,12 +42,10 @@
 		() => new IntervalXMovementCommand(timelineCtx, trackId, interval)
 	);
 
-	const intervalResizeController = new IntervalResizeController({
-		get interval() {
-			return interval;
-		},
-		timelineCtx
-	});
+	const intervalResizeController = new IntervalResizeController(
+		() => new IntervalLeftResizeCommand(interval, trackId, timelineCtx),
+		() => new IntervalRightResizeCommand(interval, trackId, timelineCtx)
+	);
 </script>
 
 {#if (left + width > 0 && left < timelineCtx.viewport.width) || intervalMoveController.dragging}

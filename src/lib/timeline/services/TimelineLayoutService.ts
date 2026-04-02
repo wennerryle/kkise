@@ -5,6 +5,8 @@ import type { TrackRepository } from '../state/TrackRepository.svelte';
 
 type MaybeInterval = Interval | null;
 
+export const MIN_INTERVAL_DURATION = 200;
+
 export class TimelineLayoutService {
 	#trackRepository: TrackRepository;
 	#intervalRepository: IntervalRepository;
@@ -34,5 +36,19 @@ export class TimelineLayoutService {
 		}
 
 		return [left, right];
+	}
+
+	getMovementLimits(
+		interval: Interval,
+		adjacentIntervals: [MaybeInterval, MaybeInterval],
+		playerTotalDuration: number
+	) {
+		const [left, right] = adjacentIntervals;
+
+		const min = left !== null ? left.end : 0;
+		const max =
+			right !== null ? right.offset - interval.duration : playerTotalDuration - interval.duration;
+
+		return { min, max };
 	}
 }
