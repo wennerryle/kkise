@@ -44,25 +44,16 @@ export class IntervalLeftResizeCommand implements Undoable {
 			ctx.player.totalDuration
 		);
 
-		let maxOffset = offsetLimits.max;
+		const initialRightEdge = this.#initialOffset + this.#initialDuration;
 
-		if (this.#interval.duration === MIN_INTERVAL_DURATION) {
-			maxOffset = this.#interval.offset;
-		}
+		const maxAllowedOffset = initialRightEdge - MIN_INTERVAL_DURATION;
 
-		const durationDiff = this.#initialDuration - this.#totalDeltaMs;
+		const targetOffset = this.#initialOffset + this.#totalDeltaMs;
 
-		if (this.#interval.offset === offsetLimits.min) {
-			this.#interval.duration = clamp(durationDiff, MIN_INTERVAL_DURATION, this.#interval.duration);
-		} else {
-			this.#interval.duration = Math.max(durationDiff, MIN_INTERVAL_DURATION);
-		}
+		const clampedOffset = clamp(targetOffset, offsetLimits.min, maxAllowedOffset);
 
-		this.#interval.offset = clamp(
-			this.#initialOffset + this.#totalDeltaMs,
-			offsetLimits.min,
-			maxOffset
-		);
+		this.#interval.offset = clampedOffset;
+		this.#interval.duration = initialRightEdge - clampedOffset;
 	}
 
 	undo(): void {

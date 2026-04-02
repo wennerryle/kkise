@@ -35,7 +35,7 @@ export class IntervalRightResizeCommand implements Undoable {
 		const [, right] = ctx.timelineLayoutService.getAdjacentIntervals(this.#trackId, this.#interval);
 
 		const maxAvailable =
-			(right !== null ? right.offset : ctx.player.totalDuration) - this.#interval.offset;
+			(right !== null ? right.offset : ctx.player.totalDuration) - this.#initialOffset;
 
 		this.#interval.duration = clamp(
 			this.#initialDuration + this.#totalDeltaMs,
