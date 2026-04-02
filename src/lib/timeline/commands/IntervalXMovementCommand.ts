@@ -20,10 +20,6 @@ export class IntervalXMovementCommand implements Undoable {
 		this.#initialOffset = interval.offset;
 	}
 
-	private getMaxOffset() {
-		return this.#timelineCtx.player.totalDuration - this.#interval.duration;
-	}
-
 	update(movementX: number) {
 		this.#currentMovementX = movementX;
 		this.#applyPosition();
