@@ -4,6 +4,9 @@
 	},
 	"cSpell.words": [
 		"dndkit",
+		"KKISE",
+		"runed",
 		"Undoable"
-	]
+	],
+	"tailwindCSS.classFunctions": ["cn"]
 }
