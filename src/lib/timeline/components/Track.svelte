@@ -76,24 +76,13 @@
 					sideOffset={10}
 					class="z-20 flex flex-col overflow-hidden rounded-md border border-gray-200 bg-white text-start"
 				>
-					<Popover.Root>
-						<Popover.Trigger
-							class="cursor-pointer px-4 py-1 text-left hover:bg-blue-500 hover:text-white"
-						>
-							Change button code
-						</Popover.Trigger>
-						<Popover.Portal>
-							<Popover.Content
-								side="right"
-								sideOffset={4}
-								class="z-20 flex flex-col overflow-hidden rounded-md border border-gray-200 bg-white text-start"
-							>
-								<p class="px-4 py-1 text-left">Pick the button</p>
-							</Popover.Content>
-						</Popover.Portal>
-					</Popover.Root>
-					<button class="cursor-pointer px-4 py-1 text-left hover:bg-blue-500 hover:text-white">
-						Delete Track
+					<button
+						onclick={() => {
+							timelineCtx.dialog.insertIntervalsOpen = true;
+						}}
+						class="cursor-pointer px-4 py-1 text-left hover:bg-blue-500 hover:text-white"
+					>
+						Insert Intervals
 					</button>
 				</Popover.Content>
 			</Popover.Portal>

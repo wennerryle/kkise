@@ -6,6 +6,7 @@
 	import { getTimelineContext } from '../context/timeline-context';
 	import { IntervalXMovementController } from '../controllers/IntervalXMovementController';
 	import { IntervalResizeController } from '../controllers/IntervalResizeController';
+
 	import { IntervalXMovementCommand } from '../commands/IntervalXMovementCommand';
 	import { IntervalLeftResizeCommand } from '../commands/IntervalLeftResizeCommand';
 	import { IntervalRightResizeCommand } from '../commands/IntervalRightResizeCommand';
@@ -77,7 +78,10 @@
 				<span class="sr-only"> Dragging Area </span>
 				<Grip class="size-3.5" />
 			</button>
-			{interval.id}
+
+			<span class="text-nowrap">
+				{interval.id}
+			</span>
 		</div>
 	</div>
 {/if}
