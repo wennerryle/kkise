@@ -8,28 +8,42 @@
 	import ValibotForm from '$lib/components/ValibotForm/components/ValibotForm.svelte';
 	import ValibotField from '$lib/components/ValibotForm/components/ValibotField.svelte';
 	import { buttonVariants, separator } from '$lib/styles';
-	import type { InsertManyOptions } from '$lib/timeline/services/InsertIntervalService';
 	import { capitalize } from 'es-toolkit';
 	import { InsertIntervalCommand } from '$lib/timeline/commands/InsertIntervalsCommand';
 
+	const ctx = getTimelineContext();
 	const prefix = `insert-interval-dialog-${numericId()}-`;
 	const prefixed = (suffix: string) => prefix + suffix;
 
-	const checked: Partial<InsertManyOptions> = $state({
-		trackId: ''
+	let formData = $state({
+		[keys.offset]: 0,
+		[keys.amount]: 1,
+		[keys.gap]: 0,
+		[keys.duration]: 0,
+		trackId: '',
+		end: 0
 	});
 
-	const ctx = getTimelineContext();
-
-	const inputParams = (key: string) =>
+	const inputParams = (key: keyof typeof formData) =>
 		({
 			id: prefixed(key),
 			name: key,
 			label: capitalize(key),
 			tag: 'input',
-			type: 'number',
-			value: 0
+			type: 'number'
 		}) as const;
+
+	$effect(() => {
+		formData.end = Math.min(
+			ctx.player.totalDuration,
+			formData[keys.offset] + formData[keys.duration]
+		);
+	});
+
+	$effect(() => {
+		const potentialDuration = formData.end - formData[keys.offset];
+		formData[keys.duration] = Math.max(0, potentialDuration);
+	});
 </script>
 
 <Dialog.Root bind:open={ctx.dialog.insertIntervalsOpen}>
@@ -38,41 +52,42 @@
 		<KKISEDialog.Content>
 			<KKISEDialog.Title class="mb-2">Insert Intervals</KKISEDialog.Title>
 			<Separator.Root class={separator} />
+
 			<ValibotForm
+				test={formData}
 				{schema}
 				{prefix}
 				onSuccessSubmit={(it) => {
-					const command = new InsertIntervalCommand(ctx, it);
-
+					const command = new InsertIntervalCommand(ctx, { ...it, trackId: formData.trackId });
 					command.execute();
 				}}
-				test={checked}
 				class="flex flex-col gap-2"
 			>
-				<Select.Root type="single" onValueChange={(id) => (checked.trackId = id)}>
+				<Select.Root type="single" bind:value={formData.trackId}>
 					<KKISESelect.Trigger>
-						{#if checked.trackId}
-							{checked.trackId}
-						{:else}
-							Select Track
-						{/if}
+						{formData.trackId || 'Select Track'}
 					</KKISESelect.Trigger>
 					<Select.Portal>
 						<KKISESelect.Content>
 							{#each ctx.trackRepository.tracks.keys() as trackId (trackId)}
-								<KKISESelect.Item value={trackId}>
-									{trackId}
-								</KKISESelect.Item>
+								<KKISESelect.Item value={trackId}>{trackId}</KKISESelect.Item>
 							{/each}
 						</KKISESelect.Content>
 					</Select.Portal>
 				</Select.Root>
 
-				<ValibotField {...inputParams(keys.offset)} />
-				<ValibotField {...inputParams(keys.amount)} />
-				<ValibotField {...inputParams(keys.gap)} />
+				<ValibotField {...inputParams(keys.offset)} bind:value={formData[keys.offset]} />
+				<ValibotField {...inputParams(keys.amount)} bind:value={formData[keys.amount]} />
+				<ValibotField {...inputParams(keys.gap)} bind:value={formData[keys.gap]} />
 
-				<ValibotField id={prefixed('end')} name="end" label="End" tag="input" type="number" />
+				<ValibotField
+					id={prefixed('end')}
+					name="end"
+					label="End"
+					tag="input"
+					type="number"
+					bind:value={formData.end}
+				/>
 
 				<ValibotField
 					id={prefixed(keys.duration)}
@@ -80,6 +95,7 @@
 					label="Duration"
 					tag="input"
 					type="number"
+					bind:value={formData[keys.duration]}
 				/>
 
 				<button class={buttonVariants()}>Apply</button>

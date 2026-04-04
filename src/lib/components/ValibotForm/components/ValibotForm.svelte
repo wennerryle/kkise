@@ -7,6 +7,7 @@
 	import { setFormErrorsContext } from '../helpers';
 	import { ref as boxed, type Ref } from '$lib/core/ref';
 	import { unstable_coerceFormValue } from '@conform-to/valibot';
+	import { toast } from 'svelte-sonner';
 
 	type SchemaKeys = keyof v.InferInput<T>;
 	type Errors = Partial<Record<SchemaKeys, string[]>>;
@@ -63,6 +64,8 @@
 
 			if (parseResult.issues !== undefined) {
 				errors.value = v.flatten(parseResult.issues).nested as Errors;
+				toast.error('Form Validation failed. Check console if error not shown in UI');
+				console.log($state.snapshot(errors.value));
 			} else {
 				errors.value = {};
 				onSuccessSubmit?.(parseResult.output as v.InferInput<T>);

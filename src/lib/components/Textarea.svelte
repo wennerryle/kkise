@@ -13,20 +13,22 @@
 		disabled?: boolean;
 	};
 
+	type Value = string | number;
+
 	type InputElement = BaseProps &
 		WithoutChildren<HTMLInputAttributes> & {
 			tag?: 'input';
 			type?: HTMLInputAttributes['type'];
 			rows?: never;
 			cols?: never;
-			value?: HTMLInputAttributes['value'];
+			value?: Value;
 		};
 
 	type TextareaElement = BaseProps &
 		WithoutChildren<HTMLTextareaAttributes> & {
 			tag: 'textarea';
 			type?: never;
-			value?: HTMLTextareaAttributes['value'];
+			value?: Value;
 		};
 
 	type Props = InputElement | TextareaElement;

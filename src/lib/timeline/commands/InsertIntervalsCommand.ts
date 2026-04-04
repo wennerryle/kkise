@@ -30,6 +30,8 @@ export class InsertIntervalCommand implements Undoable {
 			return;
 		}
 
+		toast.success('Successfully inserted!');
+
 		this.#insertedIntervals = ids;
 	}
 }

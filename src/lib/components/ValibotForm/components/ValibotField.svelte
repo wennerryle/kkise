@@ -4,9 +4,12 @@
 	import Textarea from '$lib/components/Textarea.svelte';
 	import ValibotErrors from './ValibotErrors.svelte';
 
-	type FieldProps = ComponentProps<typeof Textarea> & { name: string };
+	type FieldProps = ComponentProps<typeof Textarea> & {
+		name: string;
+		value?: string | number;
+	};
 
-	const { name, ...rest }: FieldProps = $props();
+	let { name, value = $bindable(''), ...rest }: FieldProps = $props();
 
 	const errorsContext = getFormErrorsContext();
 
@@ -15,7 +18,7 @@
 </script>
 
 <div class="flex flex-col gap-2">
-	<Textarea {...rest} {error} {name} />
+	<Textarea bind:value {...rest} {error} {name} />
 	{#if errors}
 		<ValibotErrors {errors} />
 	{/if}
