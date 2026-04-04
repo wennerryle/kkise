@@ -1,5 +1,8 @@
 import { MIN_INTERVAL_DURATION } from '$lib/timeline/services/TimelineLayoutService';
-import type { InsertManyOptions } from '$lib/timeline/services/InsertIntervalService';
+import {
+	calculateMaxIntervalsAmount,
+	type InsertManyOptions
+} from '$lib/timeline/services/InsertIntervalService';
 import * as v from 'valibot';
 
 export const keys = Object.freeze({
@@ -10,10 +13,33 @@ export const keys = Object.freeze({
 	duration: 'duration'
 }) satisfies Record<keyof InsertManyOptions, keyof InsertManyOptions>;
 
-export const schema = v.object({
-	[keys.trackId]: v.pipe(v.string(), v.nonEmpty()),
-	[keys.offset]: v.pipe(v.number(), v.minValue(0)),
-	[keys.gap]: v.pipe(v.number(), v.minValue(0)),
-	[keys.amount]: v.pipe(v.number(), v.minValue(1)),
-	[keys.duration]: v.pipe(v.number(), v.minValue(MIN_INTERVAL_DURATION))
-});
+export const schema = v.pipe(
+	v.object({
+		[keys.trackId]: v.pipe(v.string(), v.nonEmpty()),
+		[keys.offset]: v.pipe(v.number(), v.minValue(0)),
+		[keys.gap]: v.pipe(v.number(), v.minValue(0)),
+		[keys.amount]: v.pipe(v.number(), v.minValue(1)),
+		[keys.duration]: v.pipe(v.number(), v.minValue(MIN_INTERVAL_DURATION))
+	}),
+	v.forward(
+		v.partialCheck(
+			[['duration'], ['gap'], ['amount']],
+			(it) =>
+				calculateMaxIntervalsAmount({
+					gapDuration: it.gap,
+					minIntervalDuration: MIN_INTERVAL_DURATION,
+					totalDuration: it.duration
+				}) > it.amount,
+			(it) => {
+				const maxAmount = calculateMaxIntervalsAmount({
+					gapDuration: it.input.gap,
+					minIntervalDuration: MIN_INTERVAL_DURATION,
+					totalDuration: it.input.duration
+				});
+
+				return `Max amount of intervals is ${maxAmount}`;
+			}
+		),
+		['amount']
+	)
+);
