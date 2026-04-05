@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./simple-logo.svg" height="120" alt="KKISE Logo">
+  <img src="./logotype.png" height="120" alt="KKISE Logo">
 </p>
 
 <h1 align="center">KKISE</h1>

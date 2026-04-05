@@ -17,9 +17,7 @@
 	onDragEnd={dragEndController.onDragEnd}
 	modifiers={(it) => [...it, RestrictToVerticalAxis]}
 >
-	<div class="z-20 h-10 w-0"></div>
-
-	{JSON.stringify(timelineCtx.trackRepository.tracksIds)}
+	<div class="z-20 h-5 w-0"></div>
 
 	<div class="flex flex-col gap-2">
 		{#each timelineCtx.trackRepository.tracksIds as trackId, index (trackId)}

@@ -21,8 +21,8 @@
 		text: slate500,
 		fontSize: 10,
 		font: 'Inter, sans-serif',
-		tickMain: 25,
-		tickSub: 28
+		tickMain: 15,
+		tickSub: 15
 	};
 
 	let isResized = false;
