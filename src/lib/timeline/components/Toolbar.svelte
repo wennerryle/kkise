@@ -17,8 +17,8 @@
 				<Logotype class="size-6" />
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Portal>
-				<DropdownMenu.Content class="pl- w-max pt-2 pl-1" align="end">
-					<div class="rounded-md border border-slate-200 bg-white py-2.5">
+				<DropdownMenu.Content class="z-10 w-max pt-2 pl-1" align="end">
+					<div class="rounded-md border border-slate-200 bg-white py-2">
 						<DropdownMenu.Group>
 							<KKISEDropdownMenu.Item onclick={() => (ctx.dialog.insertIntervalsOpen = true)}
 								>Insert Intervals</KKISEDropdownMenu.Item

@@ -7,7 +7,7 @@
 
 <DropdownMenu.Item
 	class={cn(
-		'flex cursor-pointer items-center justify-center px-2.5 transition-colors hover:bg-slate-200',
+		'flex cursor-pointer items-center justify-center px-2.5 py-0.5 transition-colors hover:bg-slate-200',
 		className
 	)}
 	{...props}
