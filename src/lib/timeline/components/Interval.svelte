@@ -16,15 +16,15 @@
 		interval: Interval;
 	}
 
-	const { trackId, interval }: Props = $props();
-
 	const timelineCtx = getTimelineContext();
 
+	const { trackId, interval }: Props = $props();
+
 	const left = $derived(
-		interval.offset * timelineCtx.viewport.zoomLevelMs - timelineCtx.viewport.scrollLeft
+		interval.offset * timelineCtx.viewport.pixelsPerMs - timelineCtx.viewport.scrollLeft
 	);
 
-	const width = $derived(interval.duration * timelineCtx.viewport.zoomLevelMs);
+	const width = $derived(interval.duration * timelineCtx.viewport.pixelsPerMs);
 	const innerPlacementOffset = $derived(left < 0 ? left * -1 : 0);
 
 	const draggable = createDraggable({
@@ -55,33 +55,36 @@
 			'absolute h-full cursor-default overflow-hidden bg-linear-to-t from-green-300 to-green-200 text-center',
 			draggable.isDragging && 'opacity-50'
 		]}
-		style="left: {left}px; width: {width}px;"
+		style="transform: translateX({left}px); width: {width}px;"
 		{@attach draggable.attach}
 		role="presentation"
 	>
-		<div
-			class="relative flex h-full w-full items-center gap-2 px-2"
-			style="left: {innerPlacementOffset}px; width: {width - innerPlacementOffset}px;"
-			{@attach intervalMoveController.attach}
-		>
-			<button
-				class="absolute left-0 h-full w-2 cursor-e-resize bg-transparent transition-colors hover:bg-green-500"
-				{@attach intervalResizeController.leftControllerAttachment}
-				aria-label="resize left"
-			></button>
-			<button
-				class="absolute right-0 h-full w-2 cursor-e-resize bg-transparent transition-colors hover:bg-green-500"
-				{@attach intervalResizeController.rightControllerAttachment}
-				aria-label="resize right"
-			></button>
-			<button {@attach draggable.attachHandle} class="cursor-grab">
-				<span class="sr-only"> Dragging Area </span>
-				<Grip class="size-3.5" />
-			</button>
+		{#if width > 20}
+			<div
+				class="relative flex h-full w-full items-center gap-2 px-2"
+				style="transform: translateX({innerPlacementOffset}px); width: {width -
+					innerPlacementOffset}px;"
+				{@attach intervalMoveController.attach}
+			>
+				<button
+					class="absolute left-0 h-full w-2 cursor-e-resize bg-transparent transition-colors hover:bg-green-500"
+					{@attach intervalResizeController.leftControllerAttachment}
+					aria-label="resize left"
+				></button>
+				<button
+					class="absolute right-0 h-full w-2 cursor-e-resize bg-transparent transition-colors hover:bg-green-500"
+					{@attach intervalResizeController.rightControllerAttachment}
+					aria-label="resize right"
+				></button>
+				<button {@attach draggable.attachHandle} class="cursor-grab">
+					<span class="sr-only"> Dragging Area </span>
+					<Grip class="size-3.5" />
+				</button>
 
-			<span class="text-nowrap">
-				{interval.id}
-			</span>
-		</div>
+				<span class="text-nowrap">
+					{interval.id}
+				</span>
+			</div>
+		{/if}
 	</div>
 {/if}
