@@ -1,31 +1,22 @@
-import { browser } from "$app/environment";
-import { SvelteMap } from "svelte/reactivity";
-import { Interval } from "./Interval.svelte";
+import { browser } from '$app/environment';
+import { SvelteMap } from 'svelte/reactivity';
+import { Interval } from './Interval.svelte';
 
 export class IntervalRepository {
-    intervals = new SvelteMap<string, Interval>();
+	intervals = new SvelteMap<string, Interval>();
 
-    constructor() {
-        if (browser) {
-            // @ts-expect-error for debug reason
-            window.intervalRepo = this;
-        }
+	constructor() {
+		if (browser) {
+			// @ts-expect-error for debug reason
+			window.intervalRepo = this;
+		}
+	}
 
-        for (let i = 0; i < 4; i++) {
-            const gapS = 1000;
-            const size = 8 * 1000;
+	add(interval: Interval) {
+		this.intervals.set(interval.id, interval);
+	}
 
-            this.add(
-                new Interval("interval" + (i + 1), (gapS + size) * i, size),
-            );
-        }
-    }
-
-    add(interval: Interval) {
-        this.intervals.set(interval.id, interval);
-    }
-
-    get(id: string): Interval | undefined {
-        return this.intervals.get(id);
-    }
+	get(id: string): Interval | undefined {
+		return this.intervals.get(id);
+	}
 }

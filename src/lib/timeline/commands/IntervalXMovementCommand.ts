@@ -28,7 +28,7 @@ export class IntervalXMovementCommand implements Undoable {
 	#applyPosition() {
 		const ctx = this.#timelineCtx;
 
-		const movementMs = this.#currentMovementX / ctx.viewport.zoomLevelMs;
+		const movementMs = this.#currentMovementX / ctx.viewport.pixelsPerMs;
 		this.#totalDeltaMs += movementMs;
 
 		const adjacentIntervals = ctx.timelineLayoutService.getAdjacentIntervals(

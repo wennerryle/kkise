@@ -29,7 +29,7 @@ export class IntervalRightResizeCommand implements Undoable {
 
 	#applyPosition() {
 		const ctx = this.#timelineCtx;
-		const movementMs = this.#currentMovementX / ctx.viewport.zoomLevelMs;
+		const movementMs = this.#currentMovementX / ctx.viewport.pixelsPerMs;
 		this.#totalDeltaMs += movementMs;
 
 		const [, right] = ctx.timelineLayoutService.getAdjacentIntervals(this.#trackId, this.#interval);

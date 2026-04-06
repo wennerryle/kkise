@@ -3,17 +3,17 @@ export class Viewport {
 	width = $state(0);
 
 	/** How much pixels taken by 1ms */
-	#zoomLevelMs = $state(100 / 1000); /** 100px per second */
+	#pixelsPerMs = $state(100 / 1000); /** 100px per second */
 
-	get zoomLevelMs() {
-		return this.#zoomLevelMs;
+	get pixelsPerMs() {
+		return this.#pixelsPerMs;
 	}
 
-	set zoomLevelMs(value) {
-		this.#zoomLevelMs = Math.max(10 / 1000, value);
+	set pixelsPerMs(value) {
+		this.#pixelsPerMs = Math.max(10 / 1000, value);
 	}
 
-	readonly zoomLevelSec = $derived(this.zoomLevelMs * 1000);
+	readonly pixelsPerSec = $derived(this.pixelsPerMs * 1000);
 
 	/** How much scrolled by X-axis from left side in pixels */
 	#scrollLeft = $state(0);

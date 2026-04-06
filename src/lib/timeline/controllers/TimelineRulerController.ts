@@ -41,14 +41,14 @@ export class TimelineRulerController {
 			event.preventDefault();
 
 			const mouseX = event.clientX - event.currentTarget.getBoundingClientRect().left;
-			const oldZoom = this.timelineCtx.viewport.zoomLevelMs;
+			const oldZoom = this.timelineCtx.viewport.pixelsPerMs;
 			const timeAtMouseMs = (this.timelineCtx.viewport.scrollLeft + mouseX) / oldZoom;
 			const zoomSpeed = 0.05;
 			const delta = (-event.deltaY * zoomSpeed) / 1000;
 
 			const newZoom = oldZoom + delta;
 
-			this.timelineCtx.viewport.zoomLevelMs = newZoom;
+			this.timelineCtx.viewport.pixelsPerMs = newZoom;
 			this.timelineCtx.viewport.scrollLeft = timeAtMouseMs * newZoom - mouseX;
 		}
 	};

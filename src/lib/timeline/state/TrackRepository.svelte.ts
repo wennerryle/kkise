@@ -13,11 +13,11 @@ export class TrackRepository {
 			window.tracksRepo = this;
 		}
 
-		this.add(new Track('track1id', 'Track 1', ['interval1', 'interval4']));
+		this.add(new Track('track1id', 'Track 1', []));
 
-		this.add(new Track('track2id', 'Track 2', ['interval2']));
+		this.add(new Track('track2id', 'Track 2', []));
 
-		this.add(new Track('track3id', 'Track 3', ['interval3']));
+		this.add(new Track('track3id', 'Track 3', []));
 	}
 
 	add(track: Track) {

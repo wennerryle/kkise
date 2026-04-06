@@ -48,7 +48,7 @@
 
 		const viewport = timelineContext.viewport;
 
-		const zoomLevel = viewport.zoomLevelSec;
+		const zoomLevel = viewport.pixelsPerSec;
 
 		const visibleWidthCss = width / dpr;
 		const startSeconds = Math.floor(viewport.scrollLeft / zoomLevel);
@@ -122,7 +122,7 @@
 
 	$effect(() => {
 		/* eslint-disable @typescript-eslint/no-unused-expressions */
-		timelineContext.viewport.zoomLevelMs;
+		timelineContext.viewport.pixelsPerMs;
 		timelineContext.viewport.scrollLeft;
 		timelineContext.player.totalDuration;
 		/* eslint-enable @typescript-eslint/no-unused-expressions */
