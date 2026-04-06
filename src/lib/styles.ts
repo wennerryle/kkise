@@ -46,3 +46,7 @@ export const buttonVariants = cva(
 );
 
 export type ButtonVariantProps = VariantProps<typeof buttonVariants>;
+
+export const toolbarItem = cn(
+	'flex size-8 items-center justify-center rounded-[10px] transition-colors hover:bg-slate-200'
+);

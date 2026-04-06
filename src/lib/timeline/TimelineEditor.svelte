@@ -10,7 +10,7 @@
 
 <Dialogs />
 
-<div class="bg-slate-50">
+<div class="bg-slate-50 select-none">
 	<Toolbar />
 	<Viewport />
 </div>
