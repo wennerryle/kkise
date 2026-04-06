@@ -2,8 +2,6 @@ import type { Attachment } from 'svelte/attachments';
 import type { IntervalXMovementCommand } from '../commands/IntervalXMovementCommand';
 
 export class IntervalXMovementController {
-	ref: HTMLElement | null = null;
-
 	dragging = false;
 
 	createCommand: () => IntervalXMovementCommand;
@@ -13,8 +11,6 @@ export class IntervalXMovementController {
 	}
 
 	readonly attach: Attachment<HTMLElement> = (element) => {
-		this.ref = element;
-
 		element.addEventListener('pointerdown', this.onpointerdown);
 		element.addEventListener('pointerup', this.onpointerup);
 
@@ -22,30 +18,33 @@ export class IntervalXMovementController {
 			element.removeEventListener('pointerdown', this.onpointerdown);
 			element.removeEventListener('pointerup', this.onpointerup);
 			element.removeEventListener('pointermove', this.onpointermove);
-			this.ref = null;
 		};
 	};
 
 	command: IntervalXMovementCommand | null = null;
 
 	private readonly onpointerdown = (event: PointerEvent) => {
-		if (event.target !== event.currentTarget) return;
+		const target = event.target as HTMLElement;
+
+		if (target !== event.currentTarget) return;
 
 		this.dragging = true;
 
-		(event.target as HTMLElement).setPointerCapture(event.pointerId);
-		this.ref!.addEventListener('pointermove', this.onpointermove);
+		target.setPointerCapture(event.pointerId);
+		target.addEventListener('pointermove', this.onpointermove);
 
 		this.command = this.createCommand();
 	};
 
 	private readonly onpointerup = (event: PointerEvent) => {
-		if (event.target !== event.currentTarget) return;
+		const target = event.target as HTMLElement;
+
+		if (target !== event.currentTarget) return;
 
 		this.dragging = false;
 
-		(event.target as HTMLElement).releasePointerCapture(event.pointerId);
-		this.ref!.removeEventListener('pointermove', this.onpointermove);
+		target.releasePointerCapture(event.pointerId);
+		target.removeEventListener('pointermove', this.onpointermove);
 		this.command = null;
 	};
 
