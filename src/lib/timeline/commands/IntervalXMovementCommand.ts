@@ -39,7 +39,7 @@ export class IntervalXMovementCommand implements Undoable {
 		const offsetLimits = ctx.timelineLayoutService.getMovementLimits(
 			this.#interval,
 			adjacentIntervals,
-			ctx.player.totalDuration
+			ctx.player.totalDurationMs
 		);
 
 		this.#interval.offset = clamp(

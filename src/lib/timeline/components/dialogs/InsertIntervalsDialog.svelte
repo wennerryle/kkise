@@ -35,7 +35,7 @@
 
 	$effect(() => {
 		formData.end = Math.min(
-			ctx.player.totalDuration,
+			ctx.player.totalDurationMs,
 			formData[keys.offset] + formData[keys.duration]
 		);
 	});

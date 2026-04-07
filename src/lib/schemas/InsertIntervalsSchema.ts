@@ -29,7 +29,7 @@ export const schema = v.pipe(
 					gapDuration: it.gap,
 					minIntervalDuration: MIN_INTERVAL_DURATION,
 					totalDuration: it.duration
-				}) > it.amount,
+				}) >= it.amount,
 			(it) => {
 				const maxAmount = calculateMaxIntervalsAmount({
 					gapDuration: it.input.gap,

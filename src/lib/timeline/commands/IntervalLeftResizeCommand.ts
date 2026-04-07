@@ -41,7 +41,7 @@ export class IntervalLeftResizeCommand implements Undoable {
 		const offsetLimits = ctx.timelineLayoutService.getMovementLimits(
 			this.#interval,
 			adjacentIntervals,
-			ctx.player.totalDuration
+			ctx.player.totalDurationMs
 		);
 
 		const initialRightEdge = this.#initialOffset + this.#initialDuration;

@@ -2,7 +2,7 @@ type PlaybackStatus = 'playing' | 'paused' | 'stopped';
 
 export class Player {
 	/** Total duration in ms */
-	totalDuration = $state(900 * 1000);
+	totalDurationMs = $state(900 * 1000);
 
 	status: PlaybackStatus = $state('stopped');
 }
