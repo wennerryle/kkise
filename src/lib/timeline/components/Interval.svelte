@@ -65,6 +65,7 @@
 				style="transform: translateX({innerPlacementOffset}px); width: {width -
 					innerPlacementOffset}px;"
 				{@attach intervalMoveController.attach}
+				data-moveable-x
 			>
 				<button
 					class="absolute left-0 h-full w-2 cursor-e-resize bg-transparent transition-colors hover:bg-green-500"
@@ -81,7 +82,7 @@
 					<Grip class="size-3.5" />
 				</button>
 
-				<span class="text-nowrap">
+				<span class="text-nowrap" data-moveable-x>
 					{interval.id}
 				</span>
 			</div>

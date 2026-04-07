@@ -26,7 +26,7 @@ export class IntervalXMovementController {
 	private readonly onpointerdown = (event: PointerEvent) => {
 		const target = event.target as HTMLElement;
 
-		if (target !== event.currentTarget) return;
+		if (!target.hasAttribute('data-moveable-x')) return;
 
 		this.dragging = true;
 
@@ -39,7 +39,7 @@ export class IntervalXMovementController {
 	private readonly onpointerup = (event: PointerEvent) => {
 		const target = event.target as HTMLElement;
 
-		if (target !== event.currentTarget) return;
+		if (!target.hasAttribute('data-moveable-x')) return;
 
 		this.dragging = false;
 
