@@ -14,63 +14,51 @@ export class IntervalResizeController {
 		this.#rightCommandFabric = rightCommandFabric;
 	}
 
-	readonly leftControllerAttachment: Attachment<HTMLElement> = (element) => {
-		element.addEventListener('pointerdown', this.onLeftPointerDown);
-		element.addEventListener('pointerup', this.onLeftPointerUp);
+	readonly attach: Attachment<HTMLElement> = (element) => {
+		element.addEventListener('pointerdown', this.pointerDown);
+		element.addEventListener('pointerup', this.pointerUp);
 
 		return () => {
-			element.removeEventListener('pointerdown', this.onLeftPointerDown);
-			element.removeEventListener('pointerup', this.onLeftPointerUp);
+			element.removeEventListener('pointerdown', this.pointerDown);
+			element.removeEventListener('pointerup', this.pointerUp);
+			element.removeEventListener('pointermove', this.onRightPointerMove);
 			element.removeEventListener('pointermove', this.onLeftPointerMove);
 		};
 	};
 
-	#intervalLeftResizeCommand: IntervalLeftResizeCommand | null = null;
-
-	private readonly onLeftPointerDown = (event: PointerEvent) => {
+	readonly pointerDown = (event: PointerEvent) => {
 		const target = event.target as HTMLElement;
-		target.setPointerCapture(event.pointerId);
-		target.addEventListener('pointermove', this.onLeftPointerMove);
-		this.#intervalLeftResizeCommand = this.#leftCommandFabric();
+
+		if (target.hasAttribute('data-resizable-left')) {
+			target.setPointerCapture(event.pointerId);
+			target.addEventListener('pointermove', this.onLeftPointerMove);
+			this.#intervalLeftResizeCommand = this.#leftCommandFabric();
+		} else if (target.hasAttribute('data-resizable-right')) {
+			target.setPointerCapture(event.pointerId);
+			target.addEventListener('pointermove', this.onRightPointerMove);
+			this.#intervalRightResizeCommand = this.#rightCommandFabric();
+		}
 	};
 
-	private readonly onLeftPointerUp = (event: PointerEvent) => {
+	readonly pointerUp = (event: PointerEvent) => {
 		const target = event.target as HTMLElement;
+
 		target.releasePointerCapture(event.pointerId);
-		target.removeEventListener('pointermove', this.onLeftPointerMove);
-		this.#intervalLeftResizeCommand!.execute();
+
+		if (target.hasAttribute('data-resizable-left')) {
+			target.removeEventListener('pointermove', this.onLeftPointerMove);
+		} else if (target.hasAttribute('data-resizable-right')) {
+			target.removeEventListener('pointermove', this.onRightPointerMove);
+		}
 	};
+
+	#intervalLeftResizeCommand: IntervalLeftResizeCommand | null = null;
 
 	private readonly onLeftPointerMove = ({ movementX }: PointerEvent) => {
 		this.#intervalLeftResizeCommand!.update(movementX);
 	};
 
-	readonly rightControllerAttachment: Attachment<HTMLElement> = (element) => {
-		element.addEventListener('pointerdown', this.onRightPointerDown);
-		element.addEventListener('pointerup', this.onRightPointerUp);
-
-		return () => {
-			element.removeEventListener('pointerdown', this.onRightPointerDown);
-			element.removeEventListener('pointerup', this.onRightPointerUp);
-			element.removeEventListener('pointermove', this.onRightPointerMove);
-		};
-	};
-
 	#intervalRightResizeCommand: IntervalRightResizeCommand | null = null;
-
-	private readonly onRightPointerDown = (event: PointerEvent) => {
-		const target = event.target as HTMLElement;
-		target.setPointerCapture(event.pointerId);
-		target.addEventListener('pointermove', this.onRightPointerMove);
-		this.#intervalRightResizeCommand = this.#rightCommandFabric();
-	};
-
-	private readonly onRightPointerUp = (event: PointerEvent) => {
-		const target = event.target as HTMLElement;
-		target.releasePointerCapture(event.pointerId);
-		target.removeEventListener('pointermove', this.onRightPointerMove);
-		this.#intervalRightResizeCommand!.execute();
-	};
 
 	private readonly onRightPointerMove = ({ movementX }: PointerEvent) => {
 		const dpr = window.devicePixelRatio || 1;

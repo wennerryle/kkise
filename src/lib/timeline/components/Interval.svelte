@@ -65,17 +65,18 @@
 				style="transform: translateX({innerPlacementOffset}px); width: {width -
 					innerPlacementOffset}px;"
 				{@attach intervalMoveController.attach}
+				{@attach intervalResizeController.attach}
 				data-moveable-x
 			>
 				<button
 					class="absolute left-0 h-full w-2 cursor-e-resize bg-transparent transition-colors hover:bg-green-500"
-					{@attach intervalResizeController.leftControllerAttachment}
 					aria-label="resize left"
+					data-resizable-left
 				></button>
 				<button
 					class="absolute right-0 h-full w-2 cursor-e-resize bg-transparent transition-colors hover:bg-green-500"
-					{@attach intervalResizeController.rightControllerAttachment}
 					aria-label="resize right"
+					data-resizable-right
 				></button>
 				<button {@attach draggable.attachHandle} class="cursor-grab">
 					<span class="sr-only"> Dragging Area </span>
