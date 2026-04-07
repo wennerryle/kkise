@@ -59,11 +59,7 @@
 		else if (zoomLevel < 30) step = 10;
 		else if (zoomLevel < 60) step = 5;
 
-		const totalDurationInSeconds = timelineContext.player.totalDuration / 1000;
-
 		for (let i = startSeconds; i <= endSeconds; i++) {
-			if (i < 0 || i > totalDurationInSeconds) continue;
-
 			const xPx = (i * zoomLevel - viewport.scrollLeft) * dpr;
 
 			if (i % step === 0) {
@@ -124,7 +120,7 @@
 		/* eslint-disable @typescript-eslint/no-unused-expressions */
 		timelineContext.viewport.pixelsPerMs;
 		timelineContext.viewport.scrollLeft;
-		timelineContext.player.totalDuration;
+		timelineContext.player.totalDurationMs;
 		/* eslint-enable @typescript-eslint/no-unused-expressions */
 
 		if (ctx) {
