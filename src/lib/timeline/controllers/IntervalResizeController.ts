@@ -72,8 +72,10 @@ export class IntervalResizeController {
 
 		if (target.hasAttribute(magicAttributes.resizableLeft)) {
 			target.removeEventListener('pointermove', this.onLeftPointerMove);
+			this.#ctx.historyRepository.execute(this.#intervalLeftResizeCommand!);
 		} else if (target.hasAttribute(magicAttributes.resizableRight)) {
 			target.removeEventListener('pointermove', this.onRightPointerMove);
+			this.#ctx.historyRepository.execute(this.#intervalRightResizeCommand!);
 		}
 	};
 

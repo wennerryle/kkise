@@ -61,7 +61,8 @@ export class IntervalLeftResizeCommand implements Undoable {
 		this.#interval.duration = this.#initialDuration;
 	}
 
-	execute(): void {
+	execute(): boolean {
 		this.#applyPosition();
+		return true;
 	}
 }

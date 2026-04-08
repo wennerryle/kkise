@@ -49,8 +49,9 @@ export class IntervalXMovementCommand implements Undoable {
 		);
 	}
 
-	execute() {
+	execute(): boolean {
 		this.#applyPosition();
+		return true;
 	}
 
 	undo() {

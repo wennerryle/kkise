@@ -1,11 +1,8 @@
 export interface Command {
-	execute(): void;
+	execute(): false;
 }
 
-export interface Undoable extends Command {
+export interface Undoable {
 	undo(): void;
-}
-
-export function isUndoable(cmd: Command): cmd is Undoable {
-	return 'undo' in cmd;
+	execute(): boolean;
 }

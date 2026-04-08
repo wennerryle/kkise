@@ -22,16 +22,17 @@ export class InsertIntervalCommand implements Undoable {
 		track.intervals = previous;
 	}
 
-	execute(): void {
+	execute(): boolean {
 		const [error, ids] = this.#ctx.insertIntervalService.insertMany(this.#options);
 
 		if (error) {
 			toast.error(error.message);
-			return;
+			return false;
 		}
 
 		toast.success('Successfully inserted!');
 
 		this.#insertedIntervals = ids;
+		return true;
 	}
 }

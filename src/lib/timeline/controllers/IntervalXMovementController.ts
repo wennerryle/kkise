@@ -59,6 +59,7 @@ export class IntervalXMovementController {
 
 		target.releasePointerCapture(event.pointerId);
 		target.removeEventListener('pointermove', this.onpointermove);
+		this.#ctx.historyRepository.execute(this.command!);
 		this.command = null;
 	};
 

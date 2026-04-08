@@ -59,7 +59,7 @@
 				{prefix}
 				onSuccessSubmit={(it) => {
 					const command = new InsertIntervalCommand(ctx, { ...it, trackId: formData.trackId });
-					command.execute();
+					ctx.historyRepository.execute(command);
 				}}
 				class="flex flex-col gap-2"
 			>

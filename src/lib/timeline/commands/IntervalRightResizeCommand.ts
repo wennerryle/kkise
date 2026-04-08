@@ -49,7 +49,8 @@ export class IntervalRightResizeCommand implements Undoable {
 		this.#interval.duration = this.#initialDuration;
 	}
 
-	execute(): void {
+	execute(): boolean {
 		this.#applyPosition();
+		return true;
 	}
 }
