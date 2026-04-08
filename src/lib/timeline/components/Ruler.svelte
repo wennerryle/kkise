@@ -20,7 +20,6 @@
 		mainLine: slate500,
 		text: slate500,
 		fontSize: 10,
-		font: 'Inter, sans-serif',
 		tickMain: 15,
 		tickSub: 15
 	};
@@ -34,33 +33,28 @@
 		const width = canvas.width;
 		const height = canvas.height;
 
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'top';
+
 		ctx.fillStyle = theme.bg;
 		ctx.fillRect(0, 0, width, height);
 
 		ctx.lineWidth = 1 * dpr;
 		ctx.fillStyle = theme.text;
 
-		const fontSize = theme.fontSize * dpr;
-
-		ctx.font = `${fontSize}px ${theme.font}`;
-		ctx.textAlign = 'center';
-		ctx.textBaseline = 'top';
-
 		const viewport = timelineContext.viewport;
 
-		const zoomLevel = viewport.pixelsPerSec;
-
 		const visibleWidthCss = width / dpr;
-		const startSeconds = Math.floor(viewport.scrollLeft / zoomLevel);
-		const endSeconds = Math.ceil((viewport.scrollLeft + visibleWidthCss) / zoomLevel);
+		const startSeconds = Math.floor(viewport.scrollLeft / viewport.pixelsPerSec);
+		const endSeconds = Math.ceil((viewport.scrollLeft + visibleWidthCss) / viewport.pixelsPerSec);
 
 		let step = 1;
-		if (zoomLevel < 15) step = 30;
-		else if (zoomLevel < 30) step = 10;
-		else if (zoomLevel < 60) step = 5;
+		if (viewport.pixelsPerSec < 15) step = 30;
+		else if (viewport.pixelsPerSec < 30) step = 10;
+		else if (viewport.pixelsPerSec < 60) step = 5;
 
 		for (let i = startSeconds; i <= endSeconds; i++) {
-			const xPx = (i * zoomLevel - viewport.scrollLeft) * dpr;
+			const xPx = (i * viewport.pixelsPerSec - viewport.scrollLeft) * dpr;
 
 			if (i % step === 0) {
 				ctx.strokeStyle = theme.mainLine;
@@ -78,7 +72,7 @@
 				} else {
 					ctx.fillText(formatTime(i), xPx, yPx);
 				}
-			} else if (zoomLevel > 15) {
+			} else if (viewport.pixelsPerSec > 15) {
 				ctx.strokeStyle = theme.secondaryLine;
 				ctx.beginPath();
 				ctx.moveTo(xPx, height);
@@ -106,7 +100,7 @@
 	}
 
 	onMount(() => {
-		ctx = canvas.getContext('2d');
+		ctx = canvas.getContext('2d')!;
 
 		const resizeObserver = new ResizeObserver(handleResize);
 		resizeObserver.observe(container);
