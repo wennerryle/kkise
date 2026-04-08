@@ -5,9 +5,14 @@
 	import Track from './Track.svelte';
 	import { DragEndController } from '../controllers/DragEndController';
 	import { getTimelineContext } from '../context/timeline-context';
+	import { IntervalXMovementController } from '../controllers/IntervalXMovementController';
+	import { IntervalResizeController } from '../controllers/IntervalResizeController';
 
 	const timelineCtx = getTimelineContext();
 	const dragEndController = new DragEndController(timelineCtx);
+
+	const intervalMoveController = new IntervalXMovementController(timelineCtx);
+	const intervalResizeController = new IntervalResizeController(timelineCtx);
 </script>
 
 <!--
@@ -19,7 +24,11 @@
 >
 	<div class="z-20 h-5 w-0"></div>
 
-	<div class="flex flex-col gap-2">
+	<div
+		class="flex flex-col gap-2"
+		{@attach intervalMoveController.attach}
+		{@attach intervalResizeController.attach}
+	>
 		{#each timelineCtx.trackRepository.tracksIds as trackId, index (trackId)}
 			{@const track = timelineCtx.trackRepository.tracks.get(trackId)!}
 			{#if dev}

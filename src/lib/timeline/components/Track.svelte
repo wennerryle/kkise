@@ -46,11 +46,10 @@
 	});
 
 	const timelineCtx = getTimelineContext();
-
 	const timelineRulerController = new TimelineRulerController(timelineCtx);
 </script>
 
-<div {@attach sortable?.attach} class="z-10 flex w-full flex-row">
+<div {@attach sortable?.attach} class="z-10 flex w-full flex-row" data-track-id={track.id}>
 	<div
 		style="width: {timelineCtx.viewport.trackHeaderWidth}px;"
 		class={[
@@ -90,11 +89,13 @@
 	</div>
 	<div
 		class="relative flex-1 cursor-e-resize border-y border-gray-200"
+		data-track-id={track.id}
 		{@attach trackViewportDroppable.attach}
 		{...timelineRulerController.handlers}
 	>
 		{#each track.intervals as intervalId (intervalId)}
 			{@const interval = timelineCtx.intervalRepository.intervals.get(intervalId)!}
+
 			<Interval trackId={track.id} {interval} />
 		{/each}
 	</div>

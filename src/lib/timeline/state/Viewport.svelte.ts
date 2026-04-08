@@ -2,7 +2,6 @@ export class Viewport {
 	trackHeaderWidth = $state(300);
 	width = $state(0);
 
-	/** How much pixels taken by 1ms */
 	#pixelsPerMs = $state(100 / 1000); /** 100px per second */
 
 	get pixelsPerMs() {
