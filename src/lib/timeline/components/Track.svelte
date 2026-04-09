@@ -9,6 +9,7 @@
 	import EllipsisVertical from '@lucide/svelte/icons/ellipsis-vertical';
 	import Grip from '@lucide/svelte/icons/grip';
 	import { getTimelineContext } from '../context/timeline-context';
+	import { DoubleTapInsertController } from '../controllers/DoubleTapInsertController';
 
 	interface Props {
 		track: Track;
@@ -47,6 +48,7 @@
 
 	const timelineCtx = getTimelineContext();
 	const timelineRulerController = new TimelineRulerController(timelineCtx);
+	const doubleTapInsertController = new DoubleTapInsertController(timelineCtx);
 </script>
 
 <div {@attach sortable?.attach} class="z-10 flex w-full flex-row" data-track-id={track.id}>
@@ -92,6 +94,7 @@
 		data-track-id={track.id}
 		{@attach trackViewportDroppable.attach}
 		{...timelineRulerController.handlers}
+		{...doubleTapInsertController.handlers}
 	>
 		{#each track.intervals as intervalId (intervalId)}
 			{@const interval = timelineCtx.intervalRepository.intervals.get(intervalId)!}

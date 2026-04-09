@@ -12,6 +12,7 @@ export interface InsertManyOptions {
 }
 
 export type InsertIntervalsResult = [Error, null] | [null, ids: string[]];
+export type InsertIntervalResult = [Error, null] | [null, id: string];
 
 export class InsertIntervalService {
 	#ctx: TimelineContext;
@@ -53,6 +54,19 @@ export class InsertIntervalService {
 		track.intervals.push(...ids);
 
 		return [null, ids];
+	}
+
+	insert(trackId: string, interval: Interval): InsertIntervalResult {
+		const track = this.#ctx.trackRepository.get(trackId)!;
+
+		if (detectIntervalToTracksMovingCollision(this.#ctx.intervalRepository, track, interval)) {
+			return [new Error('Interval overlap error'), null];
+		}
+
+		this.#ctx.intervalRepository.add(interval);
+		track.intervals.push(interval.id);
+
+		return [null, interval.id];
 	}
 }
 

@@ -6,7 +6,8 @@
 		"dndkit",
 		"KKISE",
 		"runed",
-		"Undoable"
+		"Undoable",
+		"скролл"
 	],
 	"tailwindCSS.classFunctions": ["cn"]
 }

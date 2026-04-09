@@ -40,16 +40,25 @@ export class TimelineRulerController {
 		onwheel: (event) => {
 			event.preventDefault();
 
+			// We aim to keep the time at the mouse cursor position invariant during zoom.
+			// To ensure the cursor stays over the same point in time 't':
+			// 1. Before zoom: oldScroll + mouseX = t * oldPixelsPerMs
+			// 2. After zoom:  newScroll + mouseX = t * newPixelsPerMs
+			// Solving for newScroll:
+			// newScroll = t * newPixelsPerMs - mouseX
+
 			const mouseX = event.clientX - event.currentTarget.getBoundingClientRect().left;
-			const oldZoom = this.timelineCtx.viewport.pixelsPerMs;
-			const timeAtMouseMs = (this.timelineCtx.viewport.scrollLeft + mouseX) / oldZoom;
+			const oldPixelsPerMs = this.timelineCtx.viewport.pixelsPerMs;
+			const t = (this.timelineCtx.viewport.scrollLeft + mouseX) / oldPixelsPerMs;
+
 			const zoomSpeed = 0.05;
 			const delta = (-event.deltaY * zoomSpeed) / 1000;
+			const newPixelsPerMs = Math.max(0.001, oldPixelsPerMs + delta);
 
-			const newZoom = oldZoom + delta;
+			const newScrollLeft = t * newPixelsPerMs - mouseX;
 
-			this.timelineCtx.viewport.pixelsPerMs = newZoom;
-			this.timelineCtx.viewport.scrollLeft = timeAtMouseMs * newZoom - mouseX;
+			this.timelineCtx.viewport.pixelsPerMs = newPixelsPerMs;
+			this.timelineCtx.viewport.scrollLeft = newScrollLeft;
 		}
 	};
 }

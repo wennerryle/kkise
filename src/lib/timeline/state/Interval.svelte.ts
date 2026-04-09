@@ -28,4 +28,8 @@ export class Interval implements IntervalLike {
 			duration: this.duration
 		};
 	}
+
+	static fromIntervalLike(interval: IntervalLike) {
+		return new Interval(interval.id, interval.offset, interval.duration);
+	}
 }
