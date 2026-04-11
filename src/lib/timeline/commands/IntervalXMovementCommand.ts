@@ -9,7 +9,6 @@ export class IntervalXMovementCommand implements Undoable {
 	readonly #initialOffset: number;
 
 	#totalDeltaMs = 0;
-	#currentMovementX = 0;
 	#intervalId: string;
 
 	constructor(timelineCtx: TimelineContext, trackId: string, intervalId: string) {
@@ -23,10 +22,14 @@ export class IntervalXMovementCommand implements Undoable {
 		return this.#timelineCtx.intervalRepository.get(this.#intervalId)!;
 	}
 
+	#currentMovementX = 0;
+
 	update(movementX: number) {
 		this.#currentMovementX = movementX;
 		this.#applyPosition();
 	}
+
+	#appliedOffset = 0;
 
 	#applyPosition() {
 		const ctx = this.#timelineCtx;
@@ -45,15 +48,17 @@ export class IntervalXMovementCommand implements Undoable {
 			ctx.player.totalDurationMs
 		);
 
-		this.#interval.offset = clamp(
+		this.#appliedOffset = clamp(
 			this.#initialOffset + this.#totalDeltaMs,
 			offsetLimits.min,
 			offsetLimits.max
 		);
+
+		this.#interval.offset = this.#appliedOffset;
 	}
 
 	execute(): boolean {
-		this.#applyPosition();
+		this.#interval.offset = this.#appliedOffset;
 		return true;
 	}
 

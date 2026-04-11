@@ -32,6 +32,9 @@ export class IntervalLeftResizeCommand implements Undoable {
 		this.#applyPosition();
 	}
 
+	#appliedOffset = 0;
+	#appliedDuration = 0;
+
 	#applyPosition() {
 		const ctx = this.#timelineCtx;
 
@@ -57,8 +60,11 @@ export class IntervalLeftResizeCommand implements Undoable {
 
 		const clampedOffset = clamp(targetOffset, offsetLimits.min, maxAllowedOffset);
 
-		this.#interval.offset = clampedOffset;
-		this.#interval.duration = initialRightEdge - clampedOffset;
+		this.#appliedOffset = clampedOffset;
+		this.#appliedDuration = initialRightEdge - clampedOffset;
+
+		this.#interval.offset = this.#appliedOffset;
+		this.#interval.duration = this.#appliedDuration;
 	}
 
 	undo(): void {
@@ -67,7 +73,8 @@ export class IntervalLeftResizeCommand implements Undoable {
 	}
 
 	execute(): boolean {
-		this.#applyPosition();
+		this.#interval.duration = this.#appliedDuration;
+		this.#interval.offset = this.#appliedOffset;
 		return true;
 	}
 }
