@@ -5,12 +5,12 @@
 	import Viewport from './components/Viewport.svelte';
 	import { setTimelineContext } from './context/timeline-context';
 	import { TimelineContext } from './context/TimelineContext.svelte';
-	import { KeyboardController } from './controllers/KeyboardController';
+	import { KeyboardHistoryController } from './controllers/keyboard-controllers/KeyboardHistoryController';
 
 	const ctx = new TimelineContext();
 	setTimelineContext(ctx);
 
-	const keyboardController = new KeyboardController(ctx);
+	const keyboardController = new KeyboardHistoryController(ctx);
 
 	onMount(() => () => keyboardController.destroy());
 </script>

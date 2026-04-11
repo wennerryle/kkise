@@ -22,8 +22,12 @@ export class DoubleTapInsertCommand implements Undoable {
 	#id = '';
 
 	execute(): boolean {
+		if (this.#id === '') {
+			this.#id = stringId();
+		}
+
 		const interval = new Interval(
-			stringId(),
+			this.#id,
 			this.#options.timeMs - MIN_INTERVAL_DURATION / 2,
 			MIN_INTERVAL_DURATION
 		);
@@ -44,5 +48,7 @@ export class DoubleTapInsertCommand implements Undoable {
 		const track = this.#ctx.trackRepository.get(this.#options.trackId)!;
 
 		track.intervals = track.intervals.filter((it) => it !== this.#id);
+
+		this.#ctx.intervalRepository.intervals.delete(this.#options.trackId);
 	}
 }

@@ -1,22 +1,27 @@
 import { clamp } from 'es-toolkit';
 import type { TimelineContext } from '../context/TimelineContext.svelte';
-import type { Interval } from '../state/Interval.svelte';
 import type { Undoable } from './ICommand';
 import { MIN_INTERVAL_DURATION } from '../services/TimelineLayoutService';
 
 export class IntervalRightResizeCommand implements Undoable {
-	#interval: Interval;
 	#timelineCtx: TimelineContext;
 	#trackId: string;
 	#initialOffset: number;
 	#initialDuration: number;
+	#intervalId: string;
 
-	constructor(interval: Interval, trackId: string, timelineCtx: TimelineContext) {
-		this.#interval = interval;
+	constructor(intervalId: string, trackId: string, timelineCtx: TimelineContext) {
 		this.#timelineCtx = timelineCtx;
 		this.#trackId = trackId;
-		this.#initialDuration = interval.duration;
-		this.#initialOffset = interval.offset;
+
+		this.#intervalId = intervalId;
+
+		this.#initialDuration = this.#interval.duration;
+		this.#initialOffset = this.#interval.offset;
+	}
+
+	get #interval() {
+		return this.#timelineCtx.intervalRepository.get(this.#intervalId)!;
 	}
 
 	#currentMovementX = 0;
@@ -26,6 +31,8 @@ export class IntervalRightResizeCommand implements Undoable {
 		this.#currentMovementX = movementX;
 		this.#applyPosition();
 	}
+
+	#appliedDuration = 0;
 
 	#applyPosition() {
 		const ctx = this.#timelineCtx;
@@ -37,11 +44,13 @@ export class IntervalRightResizeCommand implements Undoable {
 		const maxAvailable =
 			(right !== null ? right.offset : ctx.player.totalDurationMs) - this.#initialOffset;
 
-		this.#interval.duration = clamp(
+		this.#appliedDuration = clamp(
 			this.#initialDuration + this.#totalDeltaMs,
 			MIN_INTERVAL_DURATION,
 			maxAvailable
 		);
+
+		this.#interval.duration = this.#appliedDuration;
 	}
 
 	undo(): void {
@@ -50,7 +59,7 @@ export class IntervalRightResizeCommand implements Undoable {
 	}
 
 	execute(): boolean {
-		this.#applyPosition();
+		this.#interval.duration = this.#appliedDuration;
 		return true;
 	}
 }

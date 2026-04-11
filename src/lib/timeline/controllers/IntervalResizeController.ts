@@ -50,8 +50,7 @@ export class IntervalResizeController {
 		target.addEventListener('pointermove', this.onLeftPointerMove);
 
 		const [intervalId, trackId] = this.getAttributes(target);
-		const interval = this.#ctx.intervalRepository.get(intervalId)!;
-		this.#intervalLeftResizeCommand = new IntervalLeftResizeCommand(interval, trackId, this.#ctx);
+		this.#intervalLeftResizeCommand = new IntervalLeftResizeCommand(intervalId, trackId, this.#ctx);
 	}
 
 	initRightResize(event: PointerEvent) {
@@ -61,8 +60,11 @@ export class IntervalResizeController {
 		target.addEventListener('pointermove', this.onRightPointerMove);
 
 		const [intervalId, trackId] = this.getAttributes(target);
-		const interval = this.#ctx.intervalRepository.get(intervalId)!;
-		this.#intervalRightResizeCommand = new IntervalRightResizeCommand(interval, trackId, this.#ctx);
+		this.#intervalRightResizeCommand = new IntervalRightResizeCommand(
+			intervalId,
+			trackId,
+			this.#ctx
+		);
 	}
 
 	readonly pointerUp = (event: PointerEvent) => {

@@ -1,23 +1,26 @@
 import { clamp } from 'es-toolkit';
 import type { TimelineContext } from '../context/TimelineContext.svelte';
-import type { Interval } from '../state/Interval.svelte';
 import type { Undoable } from './ICommand';
 
 export class IntervalXMovementCommand implements Undoable {
 	#timelineCtx: TimelineContext;
 	#trackId: string;
-	#interval: Interval;
 
 	readonly #initialOffset: number;
 
 	#totalDeltaMs = 0;
 	#currentMovementX = 0;
+	#intervalId: string;
 
-	constructor(timelineCtx: TimelineContext, trackId: string, interval: Interval) {
+	constructor(timelineCtx: TimelineContext, trackId: string, intervalId: string) {
 		this.#timelineCtx = timelineCtx;
 		this.#trackId = trackId;
-		this.#interval = interval;
-		this.#initialOffset = interval.offset;
+		this.#intervalId = intervalId;
+		this.#initialOffset = this.#interval.offset;
+	}
+
+	get #interval() {
+		return this.#timelineCtx.intervalRepository.get(this.#intervalId)!;
 	}
 
 	update(movementX: number) {

@@ -41,9 +41,7 @@ export class IntervalXMovementController {
 			throw new Error(`No ${magicAttributes.intervalId} found in the tree above`);
 		}
 
-		const interval = this.#ctx.intervalRepository.get(intervalId)!;
-
-		this.command = new IntervalXMovementCommand(this.#ctx, trackId, interval);
+		this.command = new IntervalXMovementCommand(this.#ctx, trackId, intervalId);
 
 		this.dragging = true;
 		target.setPointerCapture(event.pointerId);

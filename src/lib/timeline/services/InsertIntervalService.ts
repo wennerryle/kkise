@@ -21,7 +21,10 @@ export class InsertIntervalService {
 		this.#ctx = ctx;
 	}
 
-	insertMany({ amount, duration, gap, offset, trackId }: InsertManyOptions): InsertIntervalsResult {
+	insertMany(
+		{ amount, duration, gap, offset, trackId }: InsertManyOptions,
+		withIds: string[] = []
+	): InsertIntervalsResult {
 		const track = this.#ctx.trackRepository.get(trackId)!;
 
 		if (
@@ -46,6 +49,10 @@ export class InsertIntervalService {
 		for (let i = 0; i < amount; i++) {
 			const currentOffset = offset + (intervalDuration + gap) * i;
 			intervals.push(new Interval(stringId(), currentOffset, intervalDuration));
+		}
+
+		for (let i = 0; i < withIds.length; i++) {
+			intervals[i].id = withIds[i];
 		}
 
 		const ids = intervals.map((it) => it.id);

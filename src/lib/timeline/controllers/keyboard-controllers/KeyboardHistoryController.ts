@@ -1,15 +1,13 @@
 import { CODE_CONTROL_LEFT, CODE_Y, CODE_Z } from '$lib/core/keycode';
-import type { TimelineContext } from '../context/TimelineContext.svelte';
-
-interface KeyboardCommand {
-	command: () => void;
-	keyCodes: Set<string>;
-}
+import type { TimelineContext } from '$lib/timeline/context/TimelineContext.svelte';
+import { COMMAND_HISTORY_REDO, COMMAND_HISTORY_UNDO } from './commands-constants';
+import type { IKeyboardCommand } from './IKeyboardCommand';
 
 // https://w3c.github.io/uievents/tools/key-event-viewer.html
-export class KeyboardController {
+export class KeyboardHistoryController {
 	#ctx: TimelineContext;
-	#commands: KeyboardCommand[] = [];
+	#commands: IKeyboardCommand[] = [];
+	#handlers = new Map<string, () => void>();
 	#pressed = new Set<string>();
 
 	constructor(context: TimelineContext) {
@@ -17,17 +15,20 @@ export class KeyboardController {
 
 		this.#commands.push(
 			{
-				command: this.#undo,
+				commandName: COMMAND_HISTORY_UNDO,
 				keyCodes: new Set([CODE_CONTROL_LEFT, CODE_Z])
 			},
 			{
-				command: this.#redo,
+				commandName: COMMAND_HISTORY_REDO,
 				keyCodes: new Set([CODE_CONTROL_LEFT, CODE_Y])
 			}
 		);
 
 		document.addEventListener('keydown', this.#onkeydown);
 		document.addEventListener('keyup', this.#onkeyup);
+
+		this.#handlers.set(COMMAND_HISTORY_REDO, this.#redo);
+		this.#handlers.set(COMMAND_HISTORY_UNDO, this.#undo);
 	}
 
 	#undo = () => {
@@ -42,9 +43,9 @@ export class KeyboardController {
 		if (!event.repeat) {
 			this.#pressed.add(event.code);
 
-			this.#commands.forEach(({ command, keyCodes }) => {
+			this.#commands.forEach(({ commandName, keyCodes }) => {
 				if (this.#pressed.symmetricDifference(keyCodes).size === 0) {
-					command();
+					this.#handlers.get(commandName)?.();
 				}
 			});
 		}
@@ -54,5 +55,8 @@ export class KeyboardController {
 		this.#pressed.delete(event.code);
 	};
 
-	destroy() {}
+	destroy() {
+		document.removeEventListener('keydown', this.#onkeydown);
+		document.removeEventListener('keyup', this.#onkeyup);
+	}
 }

@@ -14,16 +14,11 @@ export class InsertIntervalCommand implements Undoable {
 
 	#insertedIntervals: string[] = [];
 
-	undo(): void {
-		const trackId = this.#options.trackId;
-		const track = this.#ctx.trackRepository.get(trackId)!;
-		const previous = track.intervals.filter((it) => !this.#insertedIntervals.includes(it));
-
-		track.intervals = previous;
-	}
-
 	execute(): boolean {
-		const [error, ids] = this.#ctx.insertIntervalService.insertMany(this.#options);
+		const [error, ids] = this.#ctx.insertIntervalService.insertMany(
+			this.#options,
+			this.#insertedIntervals
+		);
 
 		if (error) {
 			toast.error(error.message);
@@ -34,5 +29,17 @@ export class InsertIntervalCommand implements Undoable {
 
 		this.#insertedIntervals = ids;
 		return true;
+	}
+
+	undo(): void {
+		const trackId = this.#options.trackId;
+		const track = this.#ctx.trackRepository.get(trackId)!;
+		const previous = track.intervals.filter((it) => !this.#insertedIntervals.includes(it));
+
+		for (let i = 0; i < this.#insertedIntervals.length; i++) {
+			this.#ctx.intervalRepository.intervals.delete(this.#insertedIntervals[i]);
+		}
+
+		track.intervals = previous;
 	}
 }
